@@ -123,3 +123,32 @@ def get_user(request):
     user = request.user
     serializer = UserSerializer(user)
     return Response(serializer.data, status=200)
+
+
+@api_view(['POST', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def vote_for_project(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    user = request.user
+    if request.method == 'DELETE':
+        Vote.objects.filter(user=user, project=project).delete()
+        return Response({"message": "Vote removed"}, status=204)
+
+    if request.method == 'POST':
+        value = request.data.get('value', None)
+        if value not in [1, -1]:
+            return Response({"error": "Invalid vote value"}, status=400)
+        if Vote.objects.filter(user=user, project=project).exists():
+            if Vote.objects.filter(user=user, project=project, value=value).exists():
+                return Response({"error": "User has already voted for this project"}, status=400)
+
+            Vote.objects.filter(user=user, project=project).delete()
+
+        Vote.objects.create(user=user, project=project, value=value)
+        return Response({"message": "Vote recorded"}, status=201)
+
+    return Response(status=405)

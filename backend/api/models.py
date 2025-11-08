@@ -9,7 +9,7 @@ class User(AbstractUser):
     city = models.CharField(max_length=64)
     bio = models.TextField()
 
-    # 👇 FIX: Override inherited fields with unique related_name
+    # FIX: Override inherited fields with unique related_name
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='api_user_set', # Use a unique related_name
@@ -36,3 +36,19 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='votes')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='votes')
+    created_at = models.DateTimeField(auto_now_add=True)
+    value = models.IntegerField(choices=(
+        (1, 'Upvote'),
+        (-1, 'Downvote'),
+    ))
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    def __str__(self):
+        return f"{self.user.username} voted for {self.project.name}"

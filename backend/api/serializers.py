@@ -3,9 +3,13 @@ from .models import *
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    votes = serializers.SerializerMethodField()
     class Meta:
         model = Project
         fields = '__all__'
+
+    def get_votes(self, project):
+        return project.votes.filter(value=1).count() - project.votes.filter(value=-1).count()
 
 
 class CreateProjectSerializer(serializers.Serializer):
