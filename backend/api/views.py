@@ -193,3 +193,29 @@ def get_project_comments(request, project_id):
     comments = project.comments.all().order_by('-created_at')
     serializer = CommentSerializer(comments, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def analyze_project_with_ai(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    # Placeholder for AI analysis logic
+    analysis_result = {
+        "summary": f"This is an AI-generated summary for project '{project.name}'.",
+        "missing_points": [
+            "Missing point 1.",
+            "Missing point 2.",
+            "Missing point 3."
+        ],
+        "suggestions": [
+            "Suggestion 1.",
+            "Suggestion 2.",
+            "Suggestion 3."
+        ]
+    }
+
+    return Response(analysis_result)
