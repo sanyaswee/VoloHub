@@ -34,7 +34,13 @@ def projects_endpoint(request):
 def get_projects(request):
     city = request.GET.get('city', None)
     search = request.GET.get('search', None)
-    user = request.user
+    my = request.GET.get('my', False)
+
+    if my:
+        user = request.user
+    else:
+        user = AnonymousUser()
+
     projects = Project.objects.all()
     if city:
         projects = projects.filter(city=request.GET.get('city'))

@@ -70,6 +70,10 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
+CSRF_COOKIE_SAMESITE = 'Lax'  # Changed from 'None' - works for same-site requests
+CSRF_COOKIE_SECURE = False     # Can be False with SameSite=Lax
+CSRF_COOKIE_HTTPONLY = False
+
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
