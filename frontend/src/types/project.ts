@@ -9,4 +9,5 @@ export interface Project {
   created_at?: string;
   votes: number;
   comments_count: number;
+  user_voted?: number | null; // 1 for upvote, -1 for downvote, null for no vote
 }

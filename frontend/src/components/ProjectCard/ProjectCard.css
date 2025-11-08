@@ -113,9 +113,26 @@
   font-size: 0.95rem;
 }
 
-.stat-button:hover {
+.stat-button:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.05);
   color: #FFFFFF;
+}
+
+.stat-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stat-button.voting {
+  opacity: 0.6;
+}
+
+.stat-button.voted {
+  color: #4A90E2;
+}
+
+.stat-button.voted:hover:not(:disabled) {
+  color: #357ABD;
 }
 
 .stat-button svg {

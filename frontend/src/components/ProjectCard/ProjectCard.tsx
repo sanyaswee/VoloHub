@@ -1,15 +1,24 @@
 import './ProjectCard.css'
+import { useState } from 'react'
 import type { Project } from '../../types'
 import { useAuth } from '../../contexts/AuthContext'
+import apiService from '../../services/api'
 
 interface ProjectCardProps {
   project: Project
   onEdit?: (project: Project) => void
   onLoginRequired?: () => void
+  onVoteChange?: () => void
 }
 
-function ProjectCard({ project, onEdit, onLoginRequired }: ProjectCardProps) {
+function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange }: ProjectCardProps) {
   const { user } = useAuth()
+  const [isVoting, setIsVoting] = useState(false)
+  
+  // Check if user has already voted on this project
+  // user_voted: 1 = upvote, -1 = downvote, 0 or null = no vote
+  const hasVoted = project.user_voted === 1 || project.user_voted === -1
+  const isUpvoted = project.user_voted === 1
   
   // Only show edit button if user is the author
   const canEdit = user && project.author === user.id && onEdit
@@ -21,12 +30,41 @@ function ProjectCard({ project, onEdit, onLoginRequired }: ProjectCardProps) {
     }
   }
 
-  const handleVoteClick = (e: React.MouseEvent) => {
+  const handleVoteClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!user && onLoginRequired) {
-      onLoginRequired()
+    
+    // Check if user is logged in
+    if (!user) {
+      if (onLoginRequired) {
+        onLoginRequired()
+      }
+      return
     }
-    // TODO: Implement actual voting when logged in
+
+    // Prevent multiple simultaneous votes
+    if (isVoting) return
+
+    try {
+      setIsVoting(true)
+      
+      if (hasVoted) {
+        // Remove the existing vote
+        await apiService.removeVote(project.id)
+      } else {
+        // Add new upvote
+        await apiService.voteProject(project.id, { value: 1 })
+      }
+      
+      // Refresh the project list to get updated vote count
+      if (onVoteChange) {
+        onVoteChange()
+      }
+    } catch (error) {
+      console.error('Error voting:', error)
+      // Could show a toast notification here
+    } finally {
+      setIsVoting(false)
+    }
   }
 
   const handleCommentClick = (e: React.MouseEvent) => {
@@ -64,8 +102,13 @@ function ProjectCard({ project, onEdit, onLoginRequired }: ProjectCardProps) {
       <p className="project-description">{project.description}</p>
       <div className="project-card-footer">
         <div className="project-stats">
-          <button className="stat-button" onClick={handleVoteClick}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button 
+            className={`stat-button ${isVoting ? 'voting' : ''} ${isUpvoted ? 'voted' : ''}`}
+            onClick={handleVoteClick}
+            disabled={isVoting}
+            aria-label={hasVoted ? 'Remove vote' : 'Vote for project'}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill={isUpvoted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M7 10v12"></path>
               <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"></path>
             </svg>

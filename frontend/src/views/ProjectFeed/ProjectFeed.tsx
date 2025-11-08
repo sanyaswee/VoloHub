@@ -32,6 +32,16 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
     fetchProjects()
   }, [])
 
+  const handleVoteChange = async () => {
+    // Refresh projects after a vote
+    try {
+      const data = await apiService.getProjects()
+      setProjects(data)
+    } catch (err) {
+      console.error('Error refreshing projects:', err)
+    }
+  }
+
   if (loading) {
     return (
       <div className="project-feed">
@@ -64,6 +74,7 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
           project={project} 
           onEdit={onEditProject}
           onLoginRequired={onLoginRequired}
+          onVoteChange={handleVoteChange}
         />
       ))}
     </div>
