@@ -19,4 +19,5 @@ urlpatterns = [
     path('login/', login_view),
     path('logout/', logout_view),
     path('user/', get_user),
+    path('users/<int:user_id>', get_user_public),
 ]

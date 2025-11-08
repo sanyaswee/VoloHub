@@ -148,6 +148,17 @@ def get_user(request):
     return Response(serializer.data, status=200)
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_public(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        serializer = OtherUserSerializer(user)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response(status=404)
+
+
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def vote_for_project(request, project_id):
