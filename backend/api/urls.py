@@ -10,6 +10,7 @@ urlpatterns = [
     path('vote/<int:project_id>/', vote_for_project),
     path('comments/<int:project_id>/', comments_endpoint),
     path('participation_requests/<int:project_id>/', participation_requests_endpoint),
+    path('my_participation_requests/', my_participation_requests),
     path('ai_feedback/<int:project_id>/', analyze_project_with_ai),
 
     # Auth

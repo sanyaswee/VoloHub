@@ -235,6 +235,33 @@ def participation_requests_endpoint(request, project_id):
 
     return Response(status=405)
 
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def my_participation_requests(request):
+    if request.method == 'GET':
+        return get_my_participation_requests(request)
+    elif request.method == 'DELETE':
+        request_id = request.data.get('request_id')
+        return delete_my_participation_request(request, request_id)
+
+    return Response(status=405)
+
+
+def get_my_participation_requests(request):
+    user = request.user
+    requests = ParticipationRequest.objects.filter(user=user).order_by('-created_at')
+    serializer = ParticipationRequestSerializer(requests, many=True)
+    return Response(serializer.data)
+
+
+def delete_my_participation_request(request, request_id):
+    try:
+        participation_request = ParticipationRequest.objects.get(pk=request_id, user=request.user)
+        participation_request.delete()
+        return Response(status=204)
+    except ParticipationRequest.DoesNotExist:
+        return Response(status=404)
+
 
 def get_participation_requests(request, project_id):
     try:
