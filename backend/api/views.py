@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import *
 from .serializers import *
+from .feedback_ai import analyze_project_with_gemini
+
 
 # Create your views here.
 
@@ -201,21 +203,12 @@ def analyze_project_with_ai(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
     except Project.DoesNotExist:
-        return Response(status=404)
+        return Response({"error": "Project not found"}, status=404)
 
-    # Placeholder for AI analysis logic
-    analysis_result = {
-        "summary": f"This is an AI-generated summary for project '{project.name}'.",
-        "missing_points": [
-            "Missing point 1.",
-            "Missing point 2.",
-            "Missing point 3."
-        ],
-        "suggestions": [
-            "Suggestion 1.",
-            "Suggestion 2.",
-            "Suggestion 3."
-        ]
-    }
+    serialized_project = ProjectSerializer(project).data
 
-    return Response(analysis_result)
+    try:
+        analysis_result = analyze_project_with_gemini(serialized_project)
+        return Response(analysis_result)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
