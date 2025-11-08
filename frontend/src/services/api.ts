@@ -376,6 +376,31 @@ class ApiService {
   }
 
   /**
+   * Get user by ID
+   * GET /users/<user_id>/
+   */
+  async getUser(userId: number): Promise<{ id: number; username: string }> {
+    try {
+      const response = await fetch(`${this.baseUrl}/users/${userId}`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('User not found');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get comments for a project
    * GET /comments/<project_id>/
    */

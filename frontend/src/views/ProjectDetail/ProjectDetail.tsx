@@ -9,6 +9,19 @@ interface ProjectDetailProps {
   onLoginRequired?: () => void
 }
 
+// Helper component to fetch and display username
+function Username({ userId }: { userId: number }) {
+  const [username, setUsername] = useState<string>(`User #${userId}`)
+
+  useEffect(() => {
+    apiService.getUser(userId)
+      .then(user => setUsername(user.username))
+      .catch(() => setUsername(`User #${userId}`))
+  }, [userId])
+
+  return <span className="comment-user-id">{username}</span>
+}
+
 function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -241,7 +254,7 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
                   <div className="comment-header">
                     <div className="comment-author">
                       <div className="comment-avatar"></div>
-                      <span className="comment-user-id">User #{comment.user}</span>
+                      <Username userId={comment.user} />
                     </div>
                     <div className="comment-header-right">
                       <time className="comment-date">
