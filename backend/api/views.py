@@ -33,7 +33,7 @@ def get_projects(request):
     return Response(serialized.data)
 
 def create_project(request):
-    serializer = ProjectSerializer(data=request.data)
+    serializer = CreateProjectSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
