@@ -1,0 +1,263 @@
+.project-detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid #333333;
+  color: #FFFFFF;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 2rem;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #4A90E2;
+}
+
+.back-button svg {
+  flex-shrink: 0;
+}
+
+/* Content Card */
+.project-detail-content {
+  background: rgba(25, 25, 25, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Header */
+.project-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+}
+
+.project-header-main {
+  flex: 1;
+}
+
+.project-detail-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.2;
+}
+
+.project-detail-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #B0B0B0;
+  font-size: 1rem;
+}
+
+.location-icon {
+  flex-shrink: 0;
+}
+
+/* Stats */
+.project-detail-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.vote-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vote-button:hover:not(:disabled) {
+  background: rgba(74, 144, 226, 0.1);
+  border-color: #4A90E2;
+}
+
+.vote-button.voted {
+  background: rgba(74, 144, 226, 0.2);
+  border-color: #4A90E2;
+  color: #4A90E2;
+}
+
+.vote-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vote-button svg {
+  flex-shrink: 0;
+}
+
+.vote-count {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.comment-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #B0B0B0;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.comment-count svg {
+  flex-shrink: 0;
+}
+
+/* Sections */
+.project-detail-section {
+  margin-bottom: 2.5rem;
+}
+
+.project-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin: 0 0 1rem 0;
+}
+
+.project-detail-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #E0E0E0;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* Comments Placeholder */
+.comments-placeholder {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: #B0B0B0;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #B0B0B0;
+  text-align: center;
+}
+
+.error-state p {
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+}
+
+.btn-back {
+  background: #4A90E2;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+  background: #3a7bc8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .project-detail {
+    padding: 1rem;
+  }
+
+  .project-detail-content {
+    padding: 1.5rem;
+  }
+
+  .project-detail-header {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .project-detail-title {
+    font-size: 1.5rem;
+  }
+
+  .project-detail-stats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .back-button {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-detail-content {
+    padding: 1rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .project-detail-title {
+    font-size: 1.25rem;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .vote-button {
+    padding: 0.625rem 1rem;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .project-detail-content {
+    backdrop-filter: none;
+    background: rgba(25, 25, 25, 0.95);
+  }
+}

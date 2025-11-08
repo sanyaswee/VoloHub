@@ -1,5 +1,6 @@
 import './ProjectCard.css'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Project } from '../../types'
 import { useAuth } from '../../contexts/AuthContext'
 import apiService from '../../services/api'
@@ -12,6 +13,7 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange }: ProjectCardProps) {
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [isVoting, setIsVoting] = useState(false)
   
@@ -75,8 +77,17 @@ function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange }: Project
     // TODO: Implement actual comments when logged in
   }
 
+  const handleCardClick = () => {
+    navigate(`/projects/${project.id}`)
+  }
+
+  const handleViewDetailsClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    navigate(`/projects/${project.id}`)
+  }
+
   return (
-    <article className="project-card">
+    <article className="project-card" onClick={handleCardClick}>
       {canEdit && (
         <button 
           className="edit-button" 
@@ -121,7 +132,7 @@ function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange }: Project
             <span>{project.comments_count}</span>
           </button>
         </div>
-        <button className="btn-view-details">View Details</button>
+        <button className="btn-view-details" onClick={handleViewDetailsClick}>View Details</button>
       </div>
     </article>
   )
