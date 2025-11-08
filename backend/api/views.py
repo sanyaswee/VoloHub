@@ -33,13 +33,15 @@ def projects_endpoint(request):
 def get_projects(request):
     city = request.GET.get('city', None)
     search = request.GET.get('search', None)
+    user = request.user
     projects = Project.objects.all()
     if city:
         projects = projects.filter(city=request.GET.get('city'))
     if search:
         projects = projects.filter(name__icontains=search)
-    else:
-        projects = Project.objects.all()
+    if user:
+        projects = projects.filter(author=user)
+
     serialized = ProjectSerializer(projects, many=True)
     return Response(serialized.data)
 
