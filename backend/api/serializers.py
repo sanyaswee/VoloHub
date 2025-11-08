@@ -4,6 +4,7 @@ from .models import *
 
 class ProjectSerializer(serializers.ModelSerializer):
     votes = serializers.SerializerMethodField()
+    user_voted = serializers.SerializerMethodField()
     comments_count = serializers.IntegerField(source='comments.count', read_only=True)
     participants_count = serializers.IntegerField(source='participants.count', read_only=True)
     class Meta:
@@ -12,6 +13,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_votes(self, project):
         return project.votes.filter(value=1).count() - project.votes.filter(value=-1).count()
+
+    def get_user_voted(self, project):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return 0
+        vote = project.votes.filter(user=user).first()
+        if vote:
+            return vote.value
+        return 0
 
 
 class CreateProjectSerializer(serializers.Serializer):
