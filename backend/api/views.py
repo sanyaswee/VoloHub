@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import *
 from .serializers import *
+from .feedback_ai import analyze_project_with_gemini
+
 
 # Create your views here.
 
@@ -30,10 +32,16 @@ def projects_endpoint(request):
 
 def get_projects(request):
     city = request.GET.get('city', None)
+    search = request.GET.get('search', None)
+    user = request.user
+    projects = Project.objects.all()
     if city:
-        projects = Project.objects.filter(city=request.GET.get('city'))
-    else:
-        projects = Project.objects.all()
+        projects = projects.filter(city=request.GET.get('city'))
+    if search:
+        projects = projects.filter(name__icontains=search)
+    if user:
+        projects = projects.filter(author=user)
+
     serialized = ProjectSerializer(projects, many=True)
     return Response(serialized.data)
 
@@ -71,6 +79,8 @@ def get_project_detail(request, project_id):
 def update_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
+        if project.author != request.user:
+            return Response(status=403)
         serializer = ProjectSerializer(project, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -82,8 +92,11 @@ def update_project(request, project_id):
 def delete_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
-        project.delete()
-        return Response(status=204)
+        if project.author == request.user:
+            project.delete()
+            return Response(status=204)
+
+        return Response(status=403)
     except Project.DoesNotExist:
         return Response(status=404)
 
@@ -192,4 +205,119 @@ def get_project_comments(request, project_id):
 
     comments = project.comments.all().order_by('-created_at')
     serializer = CommentSerializer(comments, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def analyze_project_with_ai(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response({"error": "Project not found"}, status=404)
+
+    serialized_project = ProjectSerializer(project).data
+
+    try:
+        analysis_result = analyze_project_with_gemini(serialized_project)
+        return Response(analysis_result)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def participation_requests_endpoint(request, project_id):
+    if request.method == 'GET':
+        return get_participation_requests(request, project_id)
+    elif request.method == 'POST':
+        return send_participation_request(request, project_id)
+
+    return Response(status=405)
+
+@api_view(['GET', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def my_participation_requests(request):
+    if request.method == 'GET':
+        return get_my_participation_requests(request)
+    elif request.method == 'DELETE':
+        request_id = request.data.get('request_id')
+        return delete_my_participation_request(request, request_id)
+
+    return Response(status=405)
+
+
+def get_my_participation_requests(request):
+    user = request.user
+    requests = ParticipationRequest.objects.filter(user=user).order_by('-created_at')
+    serializer = ParticipationRequestSerializer(requests, many=True)
+    return Response(serializer.data)
+
+
+def delete_my_participation_request(request, request_id):
+    try:
+        participation_request = ParticipationRequest.objects.get(pk=request_id, user=request.user)
+        participation_request.delete()
+        return Response(status=204)
+    except ParticipationRequest.DoesNotExist:
+        return Response(status=404)
+
+
+def get_participation_requests(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    requests = project.participation_requests.all().order_by('-created_at')
+    serializer = ParticipationRequestSerializer(requests, many=True)
+    return Response(serializer.data)
+
+
+def send_participation_request(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    user = request.user
+    message = request.data.get('message', '').strip()
+    if not message:
+        return Response({"error": "Message cannot be empty"}, status=400)
+
+    if user == project.author:
+        return Response({"error": "Project author cannot send participation request"}, status=400)
+
+    if ParticipationRequest.objects.filter(user=user, project=project).exists():
+        return Response({"error": "Participation request already sent"}, status=400)
+
+    participation_request = ParticipationRequest.objects.create(user=user, project=project, message=message)
+    serializer = ParticipationRequestSerializer(participation_request)
+    return Response(serializer.data, status=201)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def respond_to_participation_request(request, request_id):
+    try:
+        participation_request = ParticipationRequest.objects.get(pk=request_id)
+    except ParticipationRequest.DoesNotExist:
+        return Response(status=404)
+
+    project = participation_request.project
+    if project.author != request.user:
+        return Response(status=403)
+
+    action = request.data.get('action', '').strip().lower()
+    if action not in ['approve', 'reject']:
+        return Response({"error": "Invalid action"}, status=400)
+
+    if action == 'approve':
+        participation_request.status = 'approved'
+        Participant.objects.create(user=participation_request.user, project=project, role='member')
+    elif action == 'reject':
+        participation_request.status = 'rejected'
+
+    participation_request.save()
+    serializer = ParticipationRequestSerializer(participation_request)
     return Response(serializer.data)

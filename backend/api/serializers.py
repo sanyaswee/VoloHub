@@ -5,6 +5,7 @@ from .models import *
 class ProjectSerializer(serializers.ModelSerializer):
     votes = serializers.SerializerMethodField()
     comments_count = serializers.IntegerField(source='comments.count', read_only=True)
+    participants_count = serializers.IntegerField(source='participants.count', read_only=True)
     class Meta:
         model = Project
         fields = '__all__'
@@ -43,4 +44,10 @@ class CreateUserSerializer(serializers.Serializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
+        fields = '__all__'
+
+
+class ParticipationRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParticipationRequest
         fields = '__all__'

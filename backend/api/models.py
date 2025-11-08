@@ -63,3 +63,34 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.project.name}"
+
+
+class Participant(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='participations')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='participants')
+    role = models.CharField(max_length=64)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    def __str__(self):
+        return f"{self.user.username} is a {self.role} in {self.project.name}"
+
+
+class ParticipationRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='participation_requests')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='participation_requests')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=32, choices=(
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ), default='pending')
+
+    class Meta:
+        unique_together = ('user', 'project')
+
+    def __str__(self):
+        return f"Participation request by {self.user.username} for {self.project.name} - {self.status}"
