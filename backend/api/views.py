@@ -1,4 +1,5 @@
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import AnonymousUser
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -39,7 +40,7 @@ def get_projects(request):
         projects = projects.filter(city=request.GET.get('city'))
     if search:
         projects = projects.filter(name__icontains=search)
-    if user:
+    if not isinstance(user, AnonymousUser):
         projects = projects.filter(author=user)
 
     serialized = ProjectSerializer(projects, many=True)
