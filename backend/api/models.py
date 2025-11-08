@@ -7,7 +7,7 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     city = models.CharField(max_length=100)
-    status = models.CharField(max_length=32)
+    status = models.CharField(max_length=32, default='idea')
     location = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
 
