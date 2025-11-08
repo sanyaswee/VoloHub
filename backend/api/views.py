@@ -40,7 +40,10 @@ def get_projects(request):
 def create_project(request):
     serializer = CreateProjectSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        if request.user.is_authenticated:
+            serializer.save(author=request.user)
+        else:
+            serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 

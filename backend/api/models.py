@@ -27,6 +27,7 @@ class User(AbstractUser):
 
 
 class Project(models.Model):
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='projects', null=True)
     name = models.CharField(max_length=100)
     description = models.TextField()
     city = models.CharField(max_length=64)
