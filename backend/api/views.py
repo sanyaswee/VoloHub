@@ -267,3 +267,30 @@ def send_participation_request(request, project_id):
     participation_request = ParticipationRequest.objects.create(user=user, project=project, message=message)
     serializer = ParticipationRequestSerializer(participation_request)
     return Response(serializer.data, status=201)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def respond_to_participation_request(request, request_id):
+    try:
+        participation_request = ParticipationRequest.objects.get(pk=request_id)
+    except ParticipationRequest.DoesNotExist:
+        return Response(status=404)
+
+    project = participation_request.project
+    if project.author != request.user:
+        return Response(status=403)
+
+    action = request.data.get('action', '').strip().lower()
+    if action not in ['approve', 'reject']:
+        return Response({"error": "Invalid action"}, status=400)
+
+    if action == 'approve':
+        participation_request.status = 'approved'
+        Participant.objects.create(user=participation_request.user, project=project, role='member')
+    elif action == 'reject':
+        participation_request.status = 'rejected'
+
+    participation_request.save()
+    serializer = ParticipationRequestSerializer(participation_request)
+    return Response(serializer.data)
