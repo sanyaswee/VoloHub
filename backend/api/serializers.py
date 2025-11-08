@@ -41,6 +41,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OtherUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+
 class CreateUserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
     password = serializers.CharField(write_only=True, min_length=8)

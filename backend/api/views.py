@@ -148,6 +148,17 @@ def get_user(request):
     return Response(serializer.data, status=200)
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_public(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+        serializer = OtherUserSerializer(user)
+        return Response(serializer.data)
+    except User.DoesNotExist:
+        return Response(status=404)
+
+
 @api_view(['POST', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def vote_for_project(request, project_id):
@@ -213,6 +224,20 @@ def get_project_comments(request, project_id):
     comments = project.comments.all().order_by('-created_at')
     serializer = CommentSerializer(comments, many=True)
     return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def delete_comment(request, comment_id):
+    try:
+        comment = Comment.objects.get(pk=comment_id)
+    except Comment.DoesNotExist:
+        return Response(status=404)
+
+    if comment.user != request.user:
+        return Response(status=403)
+
+    comment.delete()
+    return Response(status=204)
 
 
 @api_view(['GET'])
