@@ -17,3 +17,19 @@ class CreateProjectSerializer(serializers.Serializer):
     def create(self, validated_data):
         project = Project.objects.create(**validated_data)
         return project
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+class CreateUserSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    password = serializers.CharField(write_only=True, min_length=8)
+    email = serializers.EmailField()
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user

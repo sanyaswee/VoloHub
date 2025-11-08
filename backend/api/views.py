@@ -1,3 +1,4 @@
+from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -82,3 +83,43 @@ def delete_project(request, project_id):
         return Response(status=204)
     except Project.DoesNotExist:
         return Response(status=404)
+
+
+# AUTH
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    serializer = CreateUserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        login(request, user)
+        return Response({"message": "User registered"}, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return Response({"message": "Logged in", "user": CreateUserSerializer(user).data}, status=200)
+
+    return Response({"error": "Invalid credentials"}, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    logout(request)
+    return Response({"message": "Logged out"}, status=200)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data, status=200)
