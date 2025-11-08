@@ -8,7 +8,7 @@ function App() {
   const fetchPing = async () => {
     setLoading(true)
     const res = await fetch('http://localhost:8000/api/ping/')
-    const data = await res
+    const data = await res.json()
     setResponse(data)
     setLoading(false)
   }
