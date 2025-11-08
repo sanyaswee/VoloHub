@@ -38,3 +38,34 @@ def create_project(request):
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+@api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([AllowAny])
+def project_detail_endpoint(request, project_id):
+    if request.method == 'GET':
+        return get_project_detail(request, project_id)
+    elif request.method == 'PUT':
+        return update_project(request, project_id)
+    elif request.method == 'DELETE':
+        return delete_project(request, project_id)
+    return Response(status=405)
+
+
+def get_project_detail(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    serialized = ProjectSerializer(project)
+    return Response(serialized.data)
+
+def update_project(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    serializer = ProjectSerializer(project, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)
+
+def delete_project(request, project_id):
+    project = Project.objects.get(pk=project_id)
+    project.delete()
+    return Response(status=204)
