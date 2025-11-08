@@ -1,4 +1,4 @@
-import type { Project, User } from '../types';
+import type { Project, User, Comment } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000/api';
 
@@ -34,6 +34,11 @@ export interface VotePayload {
 
 export interface VoteResponse {
   message: string;
+}
+
+// Comment interfaces
+export interface CreateCommentPayload {
+  content: string;
 }
 
 // Authentication interfaces
@@ -136,7 +141,7 @@ class ApiService {
    */
   async getProject(projectId: number): Promise<Project> {
     try {
-      const response = await fetch(`${this.baseUrl}/projects/${projectId}/`, {
+      const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
         credentials: 'include',
       });
       
@@ -366,6 +371,65 @@ class ApiService {
       return data;
     } catch (error) {
       console.error('Error fetching current user:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get comments for a project
+   * GET /comments/<project_id>/
+   */
+  async getComments(projectId: number): Promise<Comment[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/comments/${projectId}`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a comment on a project
+   * POST /comments/<project_id>/
+   */
+  async createComment(projectId: number, payload: CreateCommentPayload): Promise<Comment> {
+    try {
+      const response = await fetch(`${this.baseUrl}/comments/${projectId}/`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 400) {
+          throw new Error('Invalid comment content');
+        }
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error creating comment:', error);
       throw error;
     }
   }

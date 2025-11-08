@@ -1,7 +1,7 @@
 import './ProjectDetail.css'
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import type { Project } from '../../types'
+import type { Project, Comment } from '../../types'
 import { useAuth } from '../../contexts/AuthContext'
 import apiService from '../../services/api'
 
@@ -14,12 +14,16 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [project, setProject] = useState<Project | null>(null)
+  const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
+  const [commentsLoading, setCommentsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isVoting, setIsVoting] = useState(false)
+  const [newComment, setNewComment] = useState('')
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
 
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchProjectData = async () => {
       if (!id) return
       
       try {
@@ -35,7 +39,23 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
       }
     }
 
-    fetchProject()
+    const fetchComments = async () => {
+      if (!id) return
+      
+      try {
+        setCommentsLoading(true)
+        const data = await apiService.getComments(parseInt(id))
+        setComments(data)
+      } catch (err) {
+        console.error('Error fetching comments:', err)
+        // Don't set error state for comments, just log it
+      } finally {
+        setCommentsLoading(false)
+      }
+    }
+
+    fetchProjectData()
+    fetchComments()
   }, [id])
 
   const handleBack = () => {
@@ -70,6 +90,44 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
       console.error('Error voting:', error)
     } finally {
       setIsVoting(false)
+    }
+  }
+
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!user) {
+      if (onLoginRequired) {
+        onLoginRequired()
+      }
+      return
+    }
+
+    if (!project || !newComment.trim() || isSubmittingComment) return
+
+    try {
+      setIsSubmittingComment(true)
+      
+      const createdComment = await apiService.createComment(project.id, {
+        content: newComment.trim()
+      })
+      
+      // Add new comment to the top of the list (newest first)
+      setComments([createdComment, ...comments])
+      
+      // Clear the input field
+      setNewComment('')
+      
+      // Update project comment count
+      setProject({
+        ...project,
+        comments_count: project.comments_count + 1
+      })
+    } catch (error) {
+      console.error('Error creating comment:', error)
+      // Could show a toast notification here
+    } finally {
+      setIsSubmittingComment(false)
     }
   }
 
@@ -147,9 +205,74 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
         </section>
 
         <section className="project-detail-section">
-          <h2 className="section-title">Comments</h2>
-          <div className="comments-placeholder">
-            <p>Comments section coming soon...</p>
+          <h2 className="section-title">Comments ({comments.length})</h2>
+          
+          {commentsLoading ? (
+            <div className="comments-loading">
+              <p>Loading comments...</p>
+            </div>
+          ) : comments.length === 0 ? (
+            <div className="comments-empty">
+              <p>No comments yet. Be the first to comment!</p>
+            </div>
+          ) : (
+            <div className="comments-list">
+              {comments.map((comment) => (
+                <div key={comment.id} className="comment-card">
+                  <div className="comment-header">
+                    <div className="comment-author">
+                      <div className="comment-avatar"></div>
+                      <span className="comment-user-id">User #{comment.user}</span>
+                    </div>
+                    <time className="comment-date">
+                      {new Date(comment.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </time>
+                  </div>
+                  <p className="comment-content">{comment.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add Comment Form */}
+          <div className="add-comment-section">
+            {user ? (
+              <form onSubmit={handleCommentSubmit} className="add-comment-form">
+                <div className="comment-input-wrapper">
+                  <textarea
+                    className="comment-input"
+                    placeholder="Add a comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    rows={3}
+                    disabled={isSubmittingComment}
+                  />
+                </div>
+                <button 
+                  type="submit" 
+                  className="btn-submit-comment"
+                  disabled={!newComment.trim() || isSubmittingComment}
+                >
+                  {isSubmittingComment ? 'Posting...' : 'Post Comment'}
+                </button>
+              </form>
+            ) : (
+              <div className="login-prompt">
+                <p>Please log in to leave a comment.</p>
+                <button 
+                  className="btn-login-prompt"
+                  onClick={onLoginRequired}
+                >
+                  Log In
+                </button>
+              </div>
+            )}
           </div>
         </section>
       </div>
