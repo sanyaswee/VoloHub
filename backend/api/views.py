@@ -57,19 +57,28 @@ def project_detail_endpoint(request, project_id):
 
 
 def get_project_detail(request, project_id):
-    project = Project.objects.get(pk=project_id)
-    serialized = ProjectSerializer(project)
-    return Response(serialized.data)
+    try:
+        project = Project.objects.get(pk=project_id)
+        serialized = ProjectSerializer(project)
+        return Response(serialized.data)
+    except Project.DoesNotExist:
+        return Response(status=404)
 
 def update_project(request, project_id):
-    project = Project.objects.get(pk=project_id)
-    serializer = ProjectSerializer(project, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=400)
+    try:
+        project = Project.objects.get(pk=project_id)
+        serializer = ProjectSerializer(project, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+    except Project.DoesNotExist:
+        return Response(status=404)
 
 def delete_project(request, project_id):
-    project = Project.objects.get(pk=project_id)
-    project.delete()
-    return Response(status=204)
+    try:
+        project = Project.objects.get(pk=project_id)
+        project.delete()
+        return Response(status=204)
+    except Project.DoesNotExist:
+        return Response(status=404)
