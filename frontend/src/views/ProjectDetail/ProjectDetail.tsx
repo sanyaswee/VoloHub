@@ -131,6 +131,25 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
     }
   }
 
+  const handleDeleteComment = async (commentId: number) => {
+    if (!user || !project) return
+
+    try {
+      await apiService.deleteComment(commentId)
+      
+      // Remove comment from the list
+      setComments(comments.filter(comment => comment.id !== commentId))
+      
+      // Update project comment count
+      setProject({
+        ...project,
+        comments_count: project.comments_count - 1
+      })
+    } catch (error) {
+      console.error('Error deleting comment:', error)
+    }
+  }
+
   if (loading) {
     return (
       <div className="project-detail">
@@ -224,15 +243,32 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
                       <div className="comment-avatar"></div>
                       <span className="comment-user-id">User #{comment.user}</span>
                     </div>
-                    <time className="comment-date">
-                      {new Date(comment.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </time>
+                    <div className="comment-header-right">
+                      <time className="comment-date">
+                        {new Date(comment.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </time>
+                      {user && user.id === comment.user && (
+                        <button
+                          className="btn-delete-comment"
+                          onClick={() => handleDeleteComment(comment.id)}
+                          aria-label="Delete comment"
+                          title="Delete comment"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <p className="comment-content">{comment.content}</p>
                 </div>

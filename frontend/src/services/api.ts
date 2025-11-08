@@ -433,6 +433,36 @@ class ApiService {
       throw error;
     }
   }
+
+  /**
+   * Delete a comment
+   * DELETE /delete_comment/<comment_id>/
+   */
+  async deleteComment(commentId: number): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/delete_comment/${commentId}/`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Comment not found');
+        }
+        if (response.status === 403) {
+          throw new Error('You do not have permission to delete this comment');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      throw error;
+    }
+  }
 }
 
 // Export a singleton instance
