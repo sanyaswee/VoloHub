@@ -49,7 +49,7 @@ def get_projects(request):
     if not isinstance(user, AnonymousUser):
         projects = projects.filter(author=user)
 
-    serialized = ProjectSerializer(projects, many=True)
+    serialized = ProjectSerializer(projects, many=True, context={'request': request})
     return Response(serialized.data)
 
 def create_project(request):
@@ -78,7 +78,7 @@ def project_detail_endpoint(request, project_id):
 def get_project_detail(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
-        serialized = ProjectSerializer(project)
+        serialized = ProjectSerializer(project, context={'request': request})
         return Response(serialized.data)
     except Project.DoesNotExist:
         return Response(status=404)
