@@ -215,6 +215,20 @@ def get_project_comments(request, project_id):
     return Response(serializer.data)
 
 
+@api_view(['DELETE'])
+def delete_comment(request, comment_id):
+    try:
+        comment = Comment.objects.get(pk=comment_id)
+    except Comment.DoesNotExist:
+        return Response(status=404)
+
+    if comment.user != request.user:
+        return Response(status=403)
+
+    comment.delete()
+    return Response(status=204)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def analyze_project_with_ai(request, project_id):
