@@ -77,6 +77,8 @@ def get_project_detail(request, project_id):
 def update_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
+        if project.author != request.user:
+            return Response(status=403)
         serializer = ProjectSerializer(project, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -88,8 +90,11 @@ def update_project(request, project_id):
 def delete_project(request, project_id):
     try:
         project = Project.objects.get(pk=project_id)
-        project.delete()
-        return Response(status=204)
+        if project.author == request.user:
+            project.delete()
+            return Response(status=204)
+
+        return Response(status=403)
     except Project.DoesNotExist:
         return Response(status=404)
 
@@ -216,3 +221,23 @@ def analyze_project_with_ai(request, project_id):
         return Response(analysis_result)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+
+
+# @api_view['POST']
+# def participation_request_endpoint(request, project_id):
+#     try:
+#         project = Project.objects.get(pk=project_id)
+#     except Project.DoesNotExist:
+#         return Response(status=404)
+#
+#     user = request.user
+#     message = request.data.get('message', '').strip()
+#     if not message:
+#         return Response({"error": "Message cannot be empty"}, status=400)
+#
+#     if ParticipationRequest.objects.filter(user=user, project=project).exists():
+#         return Response({"error": "You have already submitted a participation request for this project"}, status=400)
+#
+#     participation_request = ParticipationRequest.objects.create(user=user, project=project, message=message)
+#     serializer = ParticipationRequestSerializer(participation_request)
+#     return Response(serializer.data, status=201)
