@@ -1,6 +1,6 @@
 import './App.css'
 import { useState } from 'react'
-import { Sidebar, Header, CreateProjectModal } from './components'
+import { Sidebar, Header, CreateProjectModal, LoginModal } from './components'
 import { ProjectFeed, Discover, MyProjects, Settings } from './views'
 import type { Project } from './types'
 
@@ -8,6 +8,7 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentView, setCurrentView] = useState('home')
   const [modalOpen, setModalOpen] = useState(false)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
@@ -33,6 +34,14 @@ function App() {
     setEditingProject(null)
   }
 
+  const openLoginModal = () => {
+    setLoginModalOpen(true)
+  }
+
+  const closeLoginModal = () => {
+    setLoginModalOpen(false)
+  }
+
   const handleEditProject = (project: Project) => {
     setEditingProject(project)
     setModalOpen(true)
@@ -46,7 +55,7 @@ function App() {
   const renderView = () => {
     switch (currentView) {
       case 'home':
-        return <ProjectFeed key={refreshKey} onEditProject={handleEditProject} />
+        return <ProjectFeed key={refreshKey} onEditProject={handleEditProject} onLoginRequired={openLoginModal} />
       case 'discover':
         return <Discover />
       case 'my-projects':
@@ -54,7 +63,7 @@ function App() {
       case 'settings':
         return <Settings />
       default:
-        return <ProjectFeed key={refreshKey} onEditProject={handleEditProject} />
+        return <ProjectFeed key={refreshKey} onEditProject={handleEditProject} onLoginRequired={openLoginModal} />
     }
   }
 
@@ -68,7 +77,11 @@ function App() {
       />
       
       <main className="main-content">
-        <Header onMenuToggle={toggleSidebar} onNewProjectClick={openModal} />
+        <Header 
+          onMenuToggle={toggleSidebar} 
+          onNewProjectClick={openModal}
+          onLoginClick={openLoginModal}
+        />
         <div className="content-body">
           {renderView()}
         </div>
@@ -79,6 +92,11 @@ function App() {
         onClose={closeModal}
         onProjectCreated={handleProjectCreated}
         editProject={editingProject}
+      />
+
+      <LoginModal 
+        isOpen={loginModalOpen}
+        onClose={closeLoginModal}
       />
     </div>
   )

@@ -1,11 +1,23 @@
 import './Header.css'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface HeaderProps {
   onMenuToggle: () => void
   onNewProjectClick: () => void
+  onLoginClick: () => void
 }
 
-function Header({ onMenuToggle, onNewProjectClick }: HeaderProps) {
+function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) {
+  const { user, loading, logout } = useAuth()
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
+
   return (
     <>
       {/* Mobile Header - Fixed at top, hidden on desktop */}
@@ -34,19 +46,45 @@ function Header({ onMenuToggle, onNewProjectClick }: HeaderProps) {
           />
         </div>
         <div className="header-actions">
-          <button className="btn-primary" onClick={onNewProjectClick}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            <span>New Project</span>
-          </button>
-          <button className="notification-btn" aria-label="Notifications">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-          </button>
+          {loading ? (
+            <div className="auth-loading">
+              <div className="loading-spinner"></div>
+            </div>
+          ) : user ? (
+            <>
+              <button className="btn-primary" onClick={onNewProjectClick}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>New Project</span>
+              </button>
+              <div className="user-menu">
+                <button className="user-avatar" aria-label="User menu">
+                  {user.username.charAt(0).toUpperCase()}
+                </button>
+                <div className="user-dropdown glass">
+                  <div className="user-info">
+                    <div className="user-name">{user.username}</div>
+                    <div className="user-email">{user.email}</div>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <button className="dropdown-item" onClick={handleLogout}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                      <polyline points="16 17 21 12 16 7"></polyline>
+                      <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <button className="btn-primary" onClick={onLoginClick}>
+              Login
+            </button>
+          )}
         </div>
       </header>
     </>

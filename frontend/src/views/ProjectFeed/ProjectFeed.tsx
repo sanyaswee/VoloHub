@@ -6,9 +6,10 @@ import type { Project } from '../../types'
 
 interface ProjectFeedProps {
   onEditProject?: (project: Project) => void
+  onLoginRequired?: () => void
 }
 
-function ProjectFeed({ onEditProject }: ProjectFeedProps) {
+function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -58,7 +59,12 @@ function ProjectFeed({ onEditProject }: ProjectFeedProps) {
   return (
     <div className="project-feed">
       {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} onEdit={onEditProject} />
+        <ProjectCard 
+          key={project.id} 
+          project={project} 
+          onEdit={onEditProject}
+          onLoginRequired={onLoginRequired}
+        />
       ))}
     </div>
   )

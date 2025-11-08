@@ -1,6 +1,18 @@
-import type { Project } from '../types';
+import type { Project, User } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000/api';
+
+/**
+ * Get CSRF token from cookies
+ */
+function getCookie(name: string): string | undefined {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift();
+  }
+  return undefined;
+}
 
 export interface CreateProjectPayload {
   name: string;
@@ -16,6 +28,39 @@ export interface UpdateProjectPayload {
   location?: string;
 }
 
+export interface VotePayload {
+  value: 1 | -1;
+}
+
+export interface VoteResponse {
+  message: string;
+}
+
+// Authentication interfaces
+export interface RegisterPayload {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  message: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  user: User;
+}
+
+export interface LogoutResponse {
+  message: string;
+}
+
 class ApiService {
   private baseUrl: string;
 
@@ -24,11 +69,31 @@ class ApiService {
   }
 
   /**
+   * Get headers with CSRF token for POST/PUT/DELETE requests
+   */
+  private getHeaders(includeContentType: boolean = true): HeadersInit {
+    const headers: HeadersInit = {};
+    
+    if (includeContentType) {
+      headers['Content-Type'] = 'application/json';
+    }
+    
+    const csrfToken = getCookie('csrftoken');
+    if (csrfToken) {
+      headers['X-CSRFToken'] = csrfToken;
+    }
+    
+    return headers;
+  }
+
+  /**
    * Get all projects
    */
   async getProjects(): Promise<Project[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/projects/`);
+      const response = await fetch(`${this.baseUrl}/projects/`, {
+        credentials: 'include',
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -49,9 +114,8 @@ class ApiService {
     try {
       const response = await fetch(`${this.baseUrl}/projects/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getHeaders(),
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       
@@ -72,7 +136,9 @@ class ApiService {
    */
   async getProject(projectId: number): Promise<Project> {
     try {
-      const response = await fetch(`${this.baseUrl}/projects/${projectId}/`);
+      const response = await fetch(`${this.baseUrl}/projects/${projectId}/`, {
+        credentials: 'include',
+      });
       
       if (!response.ok) {
         if (response.status === 404) {
@@ -96,9 +162,8 @@ class ApiService {
     try {
       const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getHeaders(),
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       
@@ -127,6 +192,8 @@ class ApiService {
     try {
       const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
         method: 'DELETE',
+        headers: this.getHeaders(false),
+        credentials: 'include',
       });
       
       if (!response.ok) {
@@ -139,6 +206,166 @@ class ApiService {
       // 204 No Content response has no body
     } catch (error) {
       console.error(`Error deleting project ${projectId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Vote on a project (upvote or downvote)
+   */
+  async voteProject(projectId: number, payload: VotePayload): Promise<VoteResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/vote/${projectId}/`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        if (response.status === 400) {
+          throw new Error('Vote already exists or invalid vote value');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error voting on project ${projectId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Remove vote from a project
+   */
+  async removeVote(projectId: number): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/vote/${projectId}/`, {
+        method: 'DELETE',
+        headers: this.getHeaders(false),
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // 204 No Content response
+    } catch (error) {
+      console.error(`Error removing vote from project ${projectId}:`, error);
+      throw error;
+    }
+  }
+
+  // ==========================================
+  // Authentication Methods
+  // ==========================================
+
+  /**
+   * Register a new user
+   * POST /register/
+   */
+  async register(payload: RegisterPayload): Promise<RegisterResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/register`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error registering user:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Login user
+   * POST /login/
+   */
+  async login(payload: LoginPayload): Promise<LoginResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/login/`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error logging in:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Logout user
+   * POST /logout/
+   */
+  async logout(): Promise<LogoutResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/logout/`, {
+        method: 'POST',
+        headers: this.getHeaders(false),
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error logging out:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get current authenticated user
+   * GET /user/
+   */
+  async getCurrentUser(): Promise<User> {
+    try {
+      const response = await fetch(`${this.baseUrl}/user`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Not authenticated');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching current user:', error);
       throw error;
     }
   }

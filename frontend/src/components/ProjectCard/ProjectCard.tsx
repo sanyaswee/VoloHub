@@ -1,12 +1,19 @@
 import './ProjectCard.css'
 import type { Project } from '../../types'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface ProjectCardProps {
   project: Project
   onEdit?: (project: Project) => void
+  onLoginRequired?: () => void
 }
 
-function ProjectCard({ project, onEdit }: ProjectCardProps) {
+function ProjectCard({ project, onEdit, onLoginRequired }: ProjectCardProps) {
+  const { user } = useAuth()
+  
+  // Only show edit button if user is the author
+  const canEdit = user && project.author === user.id && onEdit
+
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (onEdit) {
@@ -14,9 +21,25 @@ function ProjectCard({ project, onEdit }: ProjectCardProps) {
     }
   }
 
+  const handleVoteClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!user && onLoginRequired) {
+      onLoginRequired()
+    }
+    // TODO: Implement actual voting when logged in
+  }
+
+  const handleCommentClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!user && onLoginRequired) {
+      onLoginRequired()
+    }
+    // TODO: Implement actual comments when logged in
+  }
+
   return (
     <article className="project-card">
-      {onEdit && (
+      {canEdit && (
         <button 
           className="edit-button" 
           onClick={handleEditClick}
@@ -41,14 +64,14 @@ function ProjectCard({ project, onEdit }: ProjectCardProps) {
       <p className="project-description">{project.description}</p>
       <div className="project-card-footer">
         <div className="project-stats">
-          <button className="stat-button">
+          <button className="stat-button" onClick={handleVoteClick}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M7 10v12"></path>
               <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"></path>
             </svg>
             <span>{project.votes}</span>
           </button>
-          <button className="stat-button">
+          <button className="stat-button" onClick={handleCommentClick}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
