@@ -1,5 +1,6 @@
 /* Project Card */
 .project-card {
+  position: relative;
   background: rgba(25, 25, 25, 0.7);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -15,6 +16,32 @@
 .project-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Edit Button */
+.edit-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(25, 25, 25, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #B0B0B0;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+  z-index: 1;
+}
+
+.edit-button:hover {
+  background: rgba(74, 144, 226, 0.1);
+  border-color: #4A90E2;
+  color: #4A90E2;
 }
 
 .project-card-header {

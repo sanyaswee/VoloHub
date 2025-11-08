@@ -2,11 +2,13 @@ import './App.css'
 import { useState } from 'react'
 import { Sidebar, Header, CreateProjectModal } from './components'
 import { ProjectFeed, Discover, MyProjects, Settings } from './views'
+import type { Project } from './types'
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentView, setCurrentView] = useState('home')
   const [modalOpen, setModalOpen] = useState(false)
+  const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
   const toggleSidebar = () => {
@@ -22,11 +24,18 @@ function App() {
   }
 
   const openModal = () => {
+    setEditingProject(null)
     setModalOpen(true)
   }
 
   const closeModal = () => {
     setModalOpen(false)
+    setEditingProject(null)
+  }
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project)
+    setModalOpen(true)
   }
 
   const handleProjectCreated = () => {
@@ -37,7 +46,7 @@ function App() {
   const renderView = () => {
     switch (currentView) {
       case 'home':
-        return <ProjectFeed key={refreshKey} />
+        return <ProjectFeed key={refreshKey} onEditProject={handleEditProject} />
       case 'discover':
         return <Discover />
       case 'my-projects':
@@ -45,7 +54,7 @@ function App() {
       case 'settings':
         return <Settings />
       default:
-        return <ProjectFeed key={refreshKey} />
+        return <ProjectFeed key={refreshKey} onEditProject={handleEditProject} />
     }
   }
 
@@ -69,6 +78,7 @@ function App() {
         isOpen={modalOpen}
         onClose={closeModal}
         onProjectCreated={handleProjectCreated}
+        editProject={editingProject}
       />
     </div>
   )

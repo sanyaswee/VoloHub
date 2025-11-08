@@ -4,7 +4,11 @@ import ProjectCard from '../../components/ProjectCard/ProjectCard'
 import apiService from '../../services/api'
 import type { Project } from '../../types'
 
-function ProjectFeed() {
+interface ProjectFeedProps {
+  onEditProject?: (project: Project) => void
+}
+
+function ProjectFeed({ onEditProject }: ProjectFeedProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -54,7 +58,7 @@ function ProjectFeed() {
   return (
     <div className="project-feed">
       {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
+        <ProjectCard key={project.id} project={project} onEdit={onEditProject} />
       ))}
     </div>
   )
