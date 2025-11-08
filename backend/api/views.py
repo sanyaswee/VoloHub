@@ -28,7 +28,11 @@ def projects_endpoint(request):
 
 
 def get_projects(request):
-    projects = Project.objects.all()
+    city = request.GET.get('city', None)
+    if city:
+        projects = Project.objects.filter(city=request.GET.get('city'))
+    else:
+        projects = Project.objects.all()
     serialized = ProjectSerializer(projects, many=True)
     return Response(serialized.data)
 
