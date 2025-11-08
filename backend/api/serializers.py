@@ -44,3 +44,9 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+
+class ParticipationRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ParticipationRequest
+        fields = '__all__'

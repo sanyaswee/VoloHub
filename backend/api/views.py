@@ -225,21 +225,45 @@ def analyze_project_with_ai(request, project_id):
         return Response({"error": str(e)}, status=500)
 
 
-# @api_view['POST']
-# def participation_request_endpoint(request, project_id):
-#     try:
-#         project = Project.objects.get(pk=project_id)
-#     except Project.DoesNotExist:
-#         return Response(status=404)
-#
-#     user = request.user
-#     message = request.data.get('message', '').strip()
-#     if not message:
-#         return Response({"error": "Message cannot be empty"}, status=400)
-#
-#     if ParticipationRequest.objects.filter(user=user, project=project).exists():
-#         return Response({"error": "You have already submitted a participation request for this project"}, status=400)
-#
-#     participation_request = ParticipationRequest.objects.create(user=user, project=project, message=message)
-#     serializer = ParticipationRequestSerializer(participation_request)
-#     return Response(serializer.data, status=201)
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def participation_requests_endpoint(request, project_id):
+    if request.method == 'GET':
+        return get_participation_requests(request, project_id)
+    elif request.method == 'POST':
+        return send_participation_request(request, project_id)
+
+    return Response(status=405)
+
+
+def get_participation_requests(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    requests = project.participation_requests.all().order_by('-created_at')
+    serializer = ParticipationRequestSerializer(requests, many=True)
+    return Response(serializer.data)
+
+
+def send_participation_request(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    user = request.user
+    message = request.data.get('message', '').strip()
+    if not message:
+        return Response({"error": "Message cannot be empty"}, status=400)
+
+    if user == project.author:
+        return Response({"error": "Project author cannot send participation request"}, status=400)
+
+    if ParticipationRequest.objects.filter(user=user, project=project).exists():
+        return Response({"error": "Participation request already sent"}, status=400)
+
+    participation_request = ParticipationRequest.objects.create(user=user, project=project, message=message)
+    serializer = ParticipationRequestSerializer(participation_request)
+    return Response(serializer.data, status=201)
