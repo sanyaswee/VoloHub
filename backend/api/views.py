@@ -152,3 +152,41 @@ def vote_for_project(request, project_id):
         return Response({"message": "Vote recorded"}, status=201)
 
     return Response(status=405)
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def comments_endpoint(request, project_id):
+    if request.method == 'GET':
+        return get_project_comments(request, project_id)
+    elif request.method == 'POST':
+        return comment_on_project(request, project_id)
+
+    return Response(status=405)
+
+
+def comment_on_project(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    user = request.user
+    content = request.data.get('content', '').strip()
+    if not content:
+        return Response({"error": "Comment content cannot be empty"}, status=400)
+
+    comment = Comment.objects.create(user=user, project=project, content=content)
+    serializer = CommentSerializer(comment)
+    return Response(serializer.data, status=201)
+
+
+def get_project_comments(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    comments = project.comments.all().order_by('-created_at')
+    serializer = CommentSerializer(comments, many=True)
+    return Response(serializer.data)

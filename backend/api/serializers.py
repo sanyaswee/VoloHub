@@ -4,6 +4,7 @@ from .models import *
 
 class ProjectSerializer(serializers.ModelSerializer):
     votes = serializers.SerializerMethodField()
+    comments_count = serializers.IntegerField(source='comments.count', read_only=True)
     class Meta:
         model = Project
         fields = '__all__'
@@ -37,3 +38,9 @@ class CreateUserSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
