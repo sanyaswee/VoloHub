@@ -1,0 +1,44 @@
+/* App Container */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #121212;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 250px;
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+  min-height: 100vh;
+  width: calc(100% - 250px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Content Body */
+.content-body {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* Tablet Styles (768px and below) */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding-top: 60px; /* Space for fixed mobile header */
+  }
+
+  .content-body {
+    padding: 1rem;
+  }
+}
+
+/* Mobile Styles (480px and below) */
+@media (max-width: 480px) {
+  .content-body {
+    padding: 1rem;
+  }
+}

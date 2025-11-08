@@ -1,0 +1,63 @@
+import { useState, useEffect } from 'react'
+import './ProjectFeed.css'
+import ProjectCard from '../../components/ProjectCard/ProjectCard'
+import apiService from '../../services/api'
+import type { Project } from '../../types'
+
+function ProjectFeed() {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await apiService.getProjects()
+        setProjects(data)
+      } catch (err) {
+        setError('Failed to load projects. Please try again later.')
+        console.error('Error loading projects:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProjects()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="project-feed">
+        <div className="loading-state">Loading projects...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="project-feed">
+        <div className="error-state">{error}</div>
+      </div>
+    )
+  }
+
+  if (projects.length === 0) {
+    return (
+      <div className="project-feed">
+        <div className="empty-state">No projects found.</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="project-feed">
+      {projects.map((project) => (
+        <ProjectCard key={project.id} project={project} />
+      ))}
+    </div>
+  )
+}
+
+export default ProjectFeed
