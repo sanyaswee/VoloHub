@@ -353,3 +353,16 @@ def respond_to_participation_request(request, request_id):
     participation_request.save()
     serializer = ParticipationRequestSerializer(participation_request)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_participants(request, project_id):
+    try:
+        project = Project.objects.get(pk=project_id)
+    except Project.DoesNotExist:
+        return Response(status=404)
+
+    participants = project.participants.all()
+    serializer = ParticipantSerializer(participants, many=True)
+    return Response(serializer.data)

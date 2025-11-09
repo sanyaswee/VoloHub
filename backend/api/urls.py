@@ -11,7 +11,9 @@ urlpatterns = [
     path('comments/<int:project_id>/', comments_endpoint),
     path('delete_comment/<int:comment_id>/', delete_comment),
     path('participation_requests/<int:project_id>/', participation_requests_endpoint),
+    path('handle_participation_request/<int:request_id>/', respond_to_participation_request),
     path('my_participation_requests/', my_participation_requests),
+    path('participants/<int:project_id>/', get_participants),
     path('ai_feedback/<int:project_id>/', analyze_project_with_ai),
 
     # Auth

@@ -67,3 +67,9 @@ class ParticipationRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParticipationRequest
         fields = '__all__'
+
+
+class ParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Participant
+        fields = '__all__'
