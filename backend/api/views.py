@@ -88,7 +88,7 @@ def update_project(request, project_id):
         project = Project.objects.get(pk=project_id)
         if project.author != request.user:
             return Response(status=403)
-        serializer = ProjectSerializer(project, data=request.data, partial=True)
+        serializer = ProjectSerializer(project, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
