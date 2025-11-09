@@ -788,6 +788,37 @@ class ApiService {
       throw error;
     }
   }
+
+  /**
+   * Get AI-ranked projects based on a prompt
+   * POST /ai_rank_projects/
+   */
+  async aiRankProjects(prompt: string): Promise<Array<Project & { score: number }>> {
+    try {
+      const response = await fetch(`${this.baseUrl}/ai_rank_projects/`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ prompt }),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 400) {
+          throw new Error('Invalid prompt or request');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error ranking projects with AI:', error);
+      throw error;
+    }
+  }
 }
 
 // Export a singleton instance

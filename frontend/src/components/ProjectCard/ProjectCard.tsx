@@ -10,9 +10,11 @@ interface ProjectCardProps {
   onEdit?: (project: Project) => void
   onLoginRequired?: () => void
   onVoteChange?: () => void
+  score?: number
+  showScore?: boolean
 }
 
-function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange }: ProjectCardProps) {
+function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange, score, showScore }: ProjectCardProps) {
   const navigate = useNavigate()
   const { user } = useAuth()
   const [isVoting, setIsVoting] = useState(false)
@@ -101,7 +103,17 @@ function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange }: Project
         </button>
       )}
       <div className="project-card-header">
-        <h2 className="project-title">{project.name}</h2>
+        <div className="project-title-row">
+          <h2 className="project-title">{project.name}</h2>
+          {showScore && score !== undefined && (
+            <div className="ai-score-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+              </svg>
+              <span>{ score }</span>
+            </div>
+          )}
+        </div>
         <div className="project-location">
           <svg className="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
