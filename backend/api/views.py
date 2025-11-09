@@ -248,7 +248,7 @@ def analyze_project_with_ai(request, project_id):
     except Project.DoesNotExist:
         return Response({"error": "Project not found"}, status=404)
 
-    serialized_project = ProjectSerializer(project).data
+    serialized_project = ProjectSerializer(project, context={"request": request}).data
 
     try:
         analysis_result = analyze_project_with_gemini(serialized_project)
