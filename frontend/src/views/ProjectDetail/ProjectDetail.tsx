@@ -47,22 +47,23 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
   const [hasApplied, setHasApplied] = useState(false)
   const [isAIFeedbackModalOpen, setIsAIFeedbackModalOpen] = useState(false)
 
-  useEffect(() => {
-    const fetchProjectData = async () => {
-      if (!id) return
-      
-      try {
-        setLoading(true)
-        setError(null)
-        const data = await apiService.getProject(parseInt(id))
-        setProject(data)
-      } catch (err) {
-        console.error('Error fetching project:', err)
-        setError('Failed to load project details')
-      } finally {
-        setLoading(false)
-      }
+  const fetchProjectData = async () => {
+    if (!id) return
+    
+    try {
+      setLoading(true)
+      setError(null)
+      const data = await apiService.getProject(parseInt(id))
+      setProject(data)
+    } catch (err) {
+      console.error('Error fetching project:', err)
+      setError('Failed to load project details')
+    } finally {
+      setLoading(false)
     }
+  }
+
+  useEffect(() => {
 
     const fetchComments = async () => {
       if (!id) return
@@ -624,6 +625,7 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
           isOpen={isAIFeedbackModalOpen}
           onClose={() => setIsAIFeedbackModalOpen(false)}
           projectId={project.id}
+          onSave={fetchProjectData}
         />
       )}
     </div>

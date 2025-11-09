@@ -68,6 +68,7 @@ export interface AIFeedback {
   summary: string;
   missing_points: string[];
   suggestions: string[];
+  updated_description_suggestion: string;
 }
 
 // Authentication interfaces
