@@ -815,7 +815,7 @@ class ApiService {
    * Get AI-ranked projects based on a prompt
    * POST /ai_rank_projects/
    */
-  async aiRankProjects(prompt: string): Promise<Array<Project & { score: number }>> {
+  async aiRankProjects(prompt: string): Promise<{ summary: string; projects: Array<Project & { score: number }> }> {
     try {
       const response = await fetch(`${this.baseUrl}/ai_rank_projects/`, {
         method: 'POST',

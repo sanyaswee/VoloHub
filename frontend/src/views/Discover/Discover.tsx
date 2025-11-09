@@ -11,6 +11,7 @@ interface RankedProject extends Project {
 interface DiscoverState {
   prompt: string
   rankedProjects: RankedProject[]
+  aiSummary: string
   hasSearched: boolean
 }
 
@@ -19,6 +20,7 @@ const STORAGE_KEY = 'volohub_discover_state'
 function Discover() {
   const [prompt, setPrompt] = useState('')
   const [rankedProjects, setRankedProjects] = useState<RankedProject[]>([])
+  const [aiSummary, setAiSummary] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showLoginModal, setShowLoginModal] = useState(false)
@@ -32,6 +34,7 @@ function Discover() {
         const state: DiscoverState = JSON.parse(savedState)
         setPrompt(state.prompt)
         setRankedProjects(state.rankedProjects)
+        setAiSummary(state.aiSummary)
         setHasSearched(state.hasSearched)
       }
     } catch (err) {
@@ -46,6 +49,7 @@ function Discover() {
         const state: DiscoverState = {
           prompt,
           rankedProjects,
+          aiSummary,
           hasSearched
         }
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
@@ -53,7 +57,7 @@ function Discover() {
         console.error('Error saving discover state:', err)
       }
     }
-  }, [prompt, rankedProjects, hasSearched])
+  }, [prompt, rankedProjects, aiSummary, hasSearched])
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -69,9 +73,10 @@ function Discover() {
 
     try {
       const results = await apiService.aiRankProjects(prompt)
-      setRankedProjects(results)
+      setRankedProjects(results.projects)
+      setAiSummary(results.summary)
       
-      if (results.length === 0) {
+      if (results.projects.length === 0) {
         setError('No projects found matching your criteria')
       }
     } catch (err) {
@@ -87,7 +92,8 @@ function Discover() {
     if (hasSearched && prompt.trim()) {
       try {
         const results = await apiService.aiRankProjects(prompt)
-        setRankedProjects(results)
+        setRankedProjects(results.projects)
+        setAiSummary(results.summary)
       } catch (err) {
         console.error('Error refreshing projects:', err)
       }
@@ -173,6 +179,16 @@ function Discover() {
               <h2>Top Matches for "{prompt}"</h2>
               <span className="results-count">{rankedProjects.length} project{rankedProjects.length !== 1 ? 's' : ''} found</span>
             </div>
+            {aiSummary && (
+              <div className="ai-summary-container">
+                <div className="ai-summary-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                  </svg>
+                </div>
+                <p className="ai-summary-text">{aiSummary}</p>
+              </div>
+            )}
             <div className="projects-grid">
               {rankedProjects.map((project) => (
                 <ProjectCard

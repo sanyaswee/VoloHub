@@ -212,6 +212,40 @@
   white-space: nowrap;
 }
 
+/* AI Summary Container */
+.ai-summary-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(25, 25, 25, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.ai-summary-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(53, 122, 189, 0.2) 100%);
+  border-radius: 50%;
+  color: #4A90E2;
+}
+
+.ai-summary-text {
+  flex: 1;
+  color: #FFFFFF;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  padding-top: 0.5rem;
+}
+
 /* Projects Grid */
 .projects-grid {
   display: grid;
@@ -262,6 +296,26 @@
     min-height: 300px;
     padding: 3rem 1.5rem;
   }
+
+  .ai-summary-container {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .ai-summary-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ai-summary-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ai-summary-text {
+    font-size: 0.95rem;
+    padding-top: 0.25rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -283,6 +337,11 @@
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .discover-placeholder {
+    backdrop-filter: none;
+    background: rgba(25, 25, 25, 0.95);
+  }
+
+  .ai-summary-container {
     backdrop-filter: none;
     background: rgba(25, 25, 25, 0.95);
   }
