@@ -192,6 +192,25 @@
   flex-shrink: 0;
 }
 
+/* Non-interactive stat display (for comments) */
+.stat-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #B0B0B0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: default;
+  user-select: none;
+  opacity: 0.85;
+}
+
+.stat-display svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
 .btn-view-details {
   padding: 0.625rem 1.25rem;
   background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(53, 122, 189, 0.1) 100%);

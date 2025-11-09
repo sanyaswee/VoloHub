@@ -71,13 +71,7 @@ function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange, score, sh
     }
   }
 
-  const handleCommentClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!user && onLoginRequired) {
-      onLoginRequired()
-    }
-    // TODO: Implement actual comments when logged in
-  }
+
 
   const handleCardClick = () => {
     navigate(`/projects/${project.id}`)
@@ -137,12 +131,12 @@ function ProjectCard({ project, onEdit, onLoginRequired, onVoteChange, score, sh
             </svg>
             <span>{project.votes}</span>
           </button>
-          <button className="stat-button" onClick={handleCommentClick}>
+          <div className="stat-display" aria-label="Comments count">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
             <span>{project.comments_count}</span>
-          </button>
+          </div>
         </div>
         <button className="btn-view-details" onClick={handleViewDetailsClick}>View Details</button>
       </div>
