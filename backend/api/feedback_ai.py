@@ -33,6 +33,7 @@ def analyze_project_with_gemini(project_data):
     - summary: short description of what the project is about
     - missing_points: list of key elements the project is missing
     - suggestions: list of practical improvement ideas
+    - updated_description_suggestion: a revised project description incorporating improvements
 
     Project data:
     {json.dumps(project_data, indent=2)}
@@ -60,7 +61,8 @@ def analyze_project_with_gemini(project_data):
         analysis_result = {
             "summary": "Error: Could not parse valid JSON analysis from AI.",
             "missing_points": [],
-            "suggestions": []
+            "suggestions": [],
+            "updated_description_suggestion": ""
         }
     except Exception as e:
         # Handle other potential API errors (e.g., safety blocks, auth issues)
