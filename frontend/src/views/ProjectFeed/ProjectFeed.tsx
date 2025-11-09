@@ -9,11 +9,14 @@ interface ProjectFeedProps {
   onLoginRequired?: () => void
 }
 
+type SortOption = 'default' | 'votes' | 'participants'
+
 function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
   const [projects, setProjects] = useState<Project[]>([])
   const [allProjects, setAllProjects] = useState<Project[]>([])
   const [availableCities, setAvailableCities] = useState<string[]>([])
   const [selectedCity, setSelectedCity] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<SortOption>('default')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -83,25 +86,57 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
     setSelectedCity(event.target.value)
   }
 
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortBy(event.target.value as SortOption)
+  }
+
+  // Sort projects based on selected option
+  const sortedProjects = [...projects].sort((a, b) => {
+    switch (sortBy) {
+      case 'votes':
+        return b.votes - a.votes // Descending order (highest first)
+      case 'participants':
+        return (b.participants_count || 0) - (a.participants_count || 0) // Descending order (highest first)
+      case 'default':
+      default:
+        return 0 // Keep original order
+    }
+  })
+
   if (loading) {
     return (
       <div className="project-feed-container">
-        {availableCities.length > 0 && (
-          <div className="city-filter">
-            <label htmlFor="city-select">Filter by city:</label>
+        <div className="filter-controls">
+          {availableCities.length > 0 && (
+            <div className="city-filter">
+              <label htmlFor="city-select">Filter by city:</label>
+              <select 
+                id="city-select" 
+                value={selectedCity} 
+                onChange={handleCityChange}
+                className="city-dropdown"
+              >
+                <option value="all">All Cities</option>
+                {availableCities.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="sort-filter">
+            <label htmlFor="sort-select">Sort by:</label>
             <select 
-              id="city-select" 
-              value={selectedCity} 
-              onChange={handleCityChange}
-              className="city-dropdown"
+              id="sort-select" 
+              value={sortBy} 
+              onChange={handleSortChange}
+              className="sort-dropdown"
             >
-              <option value="all">All Cities</option>
-              {availableCities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
+              <option value="default">Default</option>
+              <option value="votes">Most Votes</option>
+              <option value="participants">Most Participants</option>
             </select>
           </div>
-        )}
+        </div>
         <div className="project-feed">
           <div className="loading-state">Loading projects...</div>
         </div>
@@ -112,22 +147,37 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
   if (error) {
     return (
       <div className="project-feed-container">
-        {availableCities.length > 0 && (
-          <div className="city-filter">
-            <label htmlFor="city-select">Filter by city:</label>
+        <div className="filter-controls">
+          {availableCities.length > 0 && (
+            <div className="city-filter">
+              <label htmlFor="city-select">Filter by city:</label>
+              <select 
+                id="city-select" 
+                value={selectedCity} 
+                onChange={handleCityChange}
+                className="city-dropdown"
+              >
+                <option value="all">All Cities</option>
+                {availableCities.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="sort-filter">
+            <label htmlFor="sort-select">Sort by:</label>
             <select 
-              id="city-select" 
-              value={selectedCity} 
-              onChange={handleCityChange}
-              className="city-dropdown"
+              id="sort-select" 
+              value={sortBy} 
+              onChange={handleSortChange}
+              className="sort-dropdown"
             >
-              <option value="all">All Cities</option>
-              {availableCities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
+              <option value="default">Default</option>
+              <option value="votes">Most Votes</option>
+              <option value="participants">Most Participants</option>
             </select>
           </div>
-        )}
+        </div>
         <div className="project-feed">
           <div className="error-state">{error}</div>
         </div>
@@ -138,6 +188,47 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
   if (projects.length === 0) {
     return (
       <div className="project-feed-container">
+        <div className="filter-controls">
+          {availableCities.length > 0 && (
+            <div className="city-filter">
+              <label htmlFor="city-select">Filter by city:</label>
+              <select 
+                id="city-select" 
+                value={selectedCity} 
+                onChange={handleCityChange}
+                className="city-dropdown"
+              >
+                <option value="all">All Cities</option>
+                {availableCities.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="sort-filter">
+            <label htmlFor="sort-select">Sort by:</label>
+            <select 
+              id="sort-select" 
+              value={sortBy} 
+              onChange={handleSortChange}
+              className="sort-dropdown"
+            >
+              <option value="default">Default</option>
+              <option value="votes">Most Votes</option>
+              <option value="participants">Most Participants</option>
+            </select>
+          </div>
+        </div>
+        <div className="project-feed">
+          <div className="empty-state">No projects found.</div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="project-feed-container">
+      <div className="filter-controls">
         {availableCities.length > 0 && (
           <div className="city-filter">
             <label htmlFor="city-select">Filter by city:</label>
@@ -154,33 +245,22 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
             </select>
           </div>
         )}
-        <div className="project-feed">
-          <div className="empty-state">No projects found.</div>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <div className="project-feed-container">
-      {availableCities.length > 0 && (
-        <div className="city-filter">
-          <label htmlFor="city-select">Filter by city:</label>
+        <div className="sort-filter">
+          <label htmlFor="sort-select">Sort by:</label>
           <select 
-            id="city-select" 
-            value={selectedCity} 
-            onChange={handleCityChange}
-            className="city-dropdown"
+            id="sort-select" 
+            value={sortBy} 
+            onChange={handleSortChange}
+            className="sort-dropdown"
           >
-            <option value="all">All Cities</option>
-            {availableCities.map(city => (
-              <option key={city} value={city}>{city}</option>
-            ))}
+            <option value="default">Default</option>
+            <option value="votes">Most Votes</option>
+            <option value="participants">Most Participants</option>
           </select>
         </div>
-      )}
+      </div>
       <div className="project-feed">
-        {projects.map((project) => (
+        {sortedProjects.map((project) => (
           <ProjectCard 
             key={project.id} 
             project={project} 

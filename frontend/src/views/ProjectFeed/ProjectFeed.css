@@ -5,7 +5,15 @@
   gap: 1.5rem;
 }
 
-.city-filter {
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.city-filter,
+.sort-filter {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -14,14 +22,16 @@
   border: none;
 }
 
-.city-filter label {
+.city-filter label,
+.sort-filter label {
   color: #B0B0B0;
   font-weight: 500;
   font-size: 0.875rem;
   white-space: nowrap;
 }
 
-.city-dropdown {
+.city-dropdown,
+.sort-dropdown {
   padding: 0.5rem 1rem;
   background: #282828;
   color: #FFFFFF;
@@ -34,18 +44,21 @@
   min-width: 150px;
 }
 
-.city-dropdown:hover {
+.city-dropdown:hover,
+.sort-dropdown:hover {
   background: #2a2a2a;
   border-color: #4A90E2;
 }
 
-.city-dropdown:focus {
+.city-dropdown:focus,
+.sort-dropdown:focus {
   outline: none;
   border-color: #4A90E2;
   background: #2a2a2a;
 }
 
-.city-dropdown option {
+.city-dropdown option,
+.sort-dropdown option {
   background: #282828;
   color: #FFFFFF;
   padding: 0.5rem;
