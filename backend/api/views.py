@@ -270,10 +270,17 @@ def rank_projects_by_interests(request):
     projects = Project.objects.all()
     serialized_projects = ProjectSerializer(projects, many=True, context={"request": request}).data
     try:
-        ranked_projects = rank_projects_on_interests(serialized_projects, prompt)
-        # Convert ranked items into the same shape as /projects: include project data and score
+        ranked_result = rank_projects_on_interests(serialized_projects, prompt)
+        # ranked_result may be either a list (old behavior) or a dict {ranked_projects, summary}
+        if isinstance(ranked_result, dict):
+            ranked_list = ranked_result.get('ranked_projects', [])
+            overall_summary = ranked_result.get('summary', '')
+        else:
+            ranked_list = ranked_result
+            overall_summary = ''
+         # Convert ranked items into the same shape as /projects: include project data and score
         formatted = []
-        for item in ranked_projects:
+        for item in ranked_list:
             proj = item.get('project')
             score = item.get('score')
             explanation = item.get('match_explanation', '')
@@ -282,7 +289,8 @@ def rank_projects_by_interests(request):
             proj_with_score['score'] = score
             proj_with_score['match_explanation'] = explanation
             formatted.append(proj_with_score)
-        return Response(formatted)
+        # Return projects list and an overall summary
+        return Response({"projects": formatted, "summary": overall_summary})
     except Exception as e:
         return Response({"error": str(e)}, status=500)
 
