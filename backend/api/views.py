@@ -189,7 +189,7 @@ def vote_for_project(request, project_id):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def comments_endpoint(request, project_id):
     if request.method == 'GET':
         return get_project_comments(request, project_id)
@@ -200,6 +200,9 @@ def comments_endpoint(request, project_id):
 
 
 def comment_on_project(request, project_id):
+    if not request.user.is_authenticated:
+        return Response({"error": "Authentication required to comment"}, status=401)
+
     try:
         project = Project.objects.get(pk=project_id)
     except Project.DoesNotExist:
