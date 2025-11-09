@@ -276,9 +276,11 @@ def rank_projects_by_interests(request):
         for item in ranked_projects:
             proj = item.get('project')
             score = item.get('score')
+            explanation = item.get('match_explanation', '')
             # Attach score to the project dict
             proj_with_score = dict(proj)
             proj_with_score['score'] = score
+            proj_with_score['match_explanation'] = explanation
             formatted.append(proj_with_score)
         return Response(formatted)
     except Exception as e:
