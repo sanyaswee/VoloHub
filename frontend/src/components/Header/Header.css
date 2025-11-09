@@ -241,6 +241,17 @@
   gap: 1rem;
 }
 
+/* Desktop actions - hidden on mobile */
+.desktop-actions {
+  display: flex;
+}
+
+/* Mobile actions - hidden on desktop */
+.mobile-actions {
+  display: none;
+  margin-left: auto;
+}
+
 /* Loading State */
 .auth-loading {
   display: flex;
@@ -434,6 +445,16 @@
 @media (max-width: 768px) {
   .mobile-header {
     display: flex;
+  }
+
+  /* Show mobile actions in mobile header */
+  .mobile-actions {
+    display: flex;
+  }
+
+  /* Hide desktop actions in content header */
+  .desktop-actions {
+    display: none;
   }
 
   .content-header {
