@@ -775,6 +775,13 @@ class ApiService {
       }
       
       const data = await response.json();
+      
+      // Backend returns project with 'analysis' field containing the feedback
+      if (data.analysis) {
+        return data.analysis;
+      }
+      
+      // If the response is already in the correct format, return it
       return data;
     } catch (error) {
       console.error('Error fetching AI feedback:', error);

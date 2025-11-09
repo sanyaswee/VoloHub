@@ -110,32 +110,44 @@ function AIFeedbackModal({ isOpen, onClose, projectId }: AIFeedbackModalProps) {
               <section className="feedback-section">
                 <h3 className="section-title">Missing Points</h3>
                 <ul className="feedback-list">
-                  {feedback.missing_points.map((point, index) => (
-                    <li key={index} className="feedback-item missing">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                      </svg>
-                      <span>{point}</span>
+                  {feedback.missing_points && feedback.missing_points.length > 0 ? (
+                    feedback.missing_points.map((point, index) => (
+                      <li key={index} className="feedback-item missing">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="8" x2="12" y2="12"></line>
+                          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>{point}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="feedback-item empty">
+                      <span>No missing points identified.</span>
                     </li>
-                  ))}
+                  )}
                 </ul>
               </section>
 
               <section className="feedback-section">
                 <h3 className="section-title">Suggestions</h3>
                 <ul className="feedback-list">
-                  {feedback.suggestions.map((suggestion, index) => (
-                    <li key={index} className="feedback-item suggestion">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                        <path d="M2 17l10 5 10-5"></path>
-                        <path d="M2 12l10 5 10-5"></path>
-                      </svg>
-                      <span>{suggestion}</span>
+                  {feedback.suggestions && feedback.suggestions.length > 0 ? (
+                    feedback.suggestions.map((suggestion, index) => (
+                      <li key={index} className="feedback-item suggestion">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                          <path d="M2 17l10 5 10-5"></path>
+                          <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <span>{suggestion}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="feedback-item empty">
+                      <span>No suggestions available.</span>
                     </li>
-                  ))}
+                  )}
                 </ul>
               </section>
             </div>
