@@ -1,4 +1,4 @@
-import type { Project, User, Comment } from '../types';
+import type { Project, User, Comment, ParticipationRequest } from '../types';
 
 const API_BASE_URL = 'http://localhost:8000/api';
 
@@ -39,6 +39,35 @@ export interface VoteResponse {
 // Comment interfaces
 export interface CreateCommentPayload {
   content: string;
+}
+
+// Participation Request interfaces
+export interface SendParticipationRequestPayload {
+  message: string;
+}
+
+export interface DeleteMyParticipationRequestPayload {
+  request_id: number;
+}
+
+export interface HandleParticipationRequestPayload {
+  action: 'approve' | 'reject';
+}
+
+// Participant interface
+export interface Participant {
+  id: number;
+  user: number;
+  project: number;
+  role: string;
+  joined_at: string;
+}
+
+// AI Feedback interface
+export interface AIFeedback {
+  summary: string;
+  missing_points: string[];
+  suggestions: string[];
 }
 
 // Authentication interfaces
@@ -280,7 +309,7 @@ class ApiService {
    */
   async register(payload: RegisterPayload): Promise<RegisterResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/register`, {
+      const response = await fetch(`${this.baseUrl}/register/`, {
         method: 'POST',
         headers: this.getHeaders(),
         credentials: 'include',
@@ -485,6 +514,228 @@ class ApiService {
       }
     } catch (error) {
       console.error('Error deleting comment:', error);
+      throw error;
+    }
+  }
+
+  // ==========================================
+  // Participation Request Methods
+  // ==========================================
+
+  /**
+   * Get participation requests for a project
+   * GET /participation_requests/<project_id>/
+   */
+  async getParticipationRequests(projectId: number): Promise<ParticipationRequest[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/participation_requests/${projectId}/`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching participation requests:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Send a participation request to a project
+   * POST /participation_requests/<project_id>/
+   */
+  async sendParticipationRequest(
+    projectId: number,
+    payload: SendParticipationRequestPayload
+  ): Promise<ParticipationRequest> {
+    try {
+      const response = await fetch(`${this.baseUrl}/participation_requests/${projectId}/`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 400) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Invalid request or duplicate');
+        }
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error sending participation request:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get current user's participation requests
+   * GET /my_participation_requests/
+   */
+  async getMyParticipationRequests(): Promise<ParticipationRequest[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/my_participation_requests/`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching my participation requests:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a participation request owned by the current user
+   * DELETE /my_participation_requests/
+   */
+  async deleteMyParticipationRequest(requestId: number): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/my_participation_requests/`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify({ request_id: requestId }),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Participation request not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // 204 No Content response
+    } catch (error) {
+      console.error('Error deleting participation request:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Handle (approve or reject) a participation request
+   * POST /handle_participation_request/<request_id>/
+   */
+  async handleParticipationRequest(
+    requestId: number,
+    payload: HandleParticipationRequestPayload
+  ): Promise<ParticipationRequest> {
+    try {
+      const response = await fetch(`${this.baseUrl}/handle_participation_request/${requestId}/`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+      
+      if (!response.ok) {
+        if (response.status === 400) {
+          throw new Error('Invalid action');
+        }
+        if (response.status === 403) {
+          throw new Error('Only the project author can handle participation requests');
+        }
+        if (response.status === 404) {
+          throw new Error('Participation request not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error handling participation request:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get participants for a project
+   * GET /participants/<project_id>/
+   */
+  async getParticipants(projectId: number): Promise<Participant[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/participants/${projectId}/`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching participants:', error);
+      throw error;
+    }
+  }
+
+  // ==========================================
+  // AI Feedback Methods
+  // ==========================================
+
+  /**
+   * Get AI-generated feedback for a project
+   * GET /ai_feedback/<project_id>/
+   */
+  async getAIFeedback(projectId: number): Promise<AIFeedback> {
+    try {
+      const response = await fetch(`${this.baseUrl}/ai_feedback/${projectId}/`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Project not found');
+        }
+        if (response.status === 401) {
+          throw new Error('Authentication required');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching AI feedback:', error);
       throw error;
     }
   }

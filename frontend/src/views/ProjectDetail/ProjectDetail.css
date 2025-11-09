@@ -1,5 +1,4 @@
 .project-detail {
-  max-width: 900px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
@@ -131,6 +130,33 @@
 }
 
 .comment-count svg {
+  flex-shrink: 0;
+}
+
+/* AI Feedback Button */
+.btn-ai-feedback {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid #4A90E2;
+  border-radius: 6px;
+  color: #4A90E2;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ai-feedback:hover {
+  background: #4A90E2;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.btn-ai-feedback svg {
   flex-shrink: 0;
 }
 
@@ -408,7 +434,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .project-detail {
-    padding: 1rem;
+    padding: 0rem;
   }
 
   .project-detail-content {
@@ -465,6 +491,41 @@
     backdrop-filter: blur(8px);
   }
 
+  .participation-requests-section {
+    padding: 1rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .participation-requests-section .section-title {
+    font-size: 1.25rem;
+  }
+
+  .participation-request-card {
+    padding: 1rem;
+  }
+
+  .request-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .request-message {
+    font-size: 0.875rem;
+  }
+
+  .request-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-approve,
+  .btn-reject {
+    width: 100%;
+    justify-content: center;
+    padding: 0.625rem;
+  }
+
   .project-detail-title {
     font-size: 1.25rem;
   }
@@ -508,6 +569,234 @@
   .login-prompt {
     padding: 1.5rem;
   }
+}
+
+/* Apply to Participate Button */
+.btn-apply-participate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: transparent;
+  border: 1px solid #4A90E2;
+  border-radius: 6px;
+  color: #4A90E2;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-apply-participate:hover {
+  background: #4A90E2;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(74, 144, 226, 0.3);
+}
+
+.btn-apply-participate svg {
+  flex-shrink: 0;
+}
+
+/* Already Applied Message */
+.already-applied-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: rgba(40, 40, 40, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: #B0B0B0;
+  font-size: 1rem;
+  font-weight: 500;
+  justify-content: center;
+}
+
+.already-applied-message svg {
+  color: #4A90E2;
+  flex-shrink: 0;
+}
+
+/* Participants Section */
+.participants-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgba(40, 40, 40, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+}
+
+.participants-trigger:hover {
+  background: rgba(40, 40, 40, 0.7);
+  border-color: rgba(74, 144, 226, 0.3);
+  transform: translateX(4px);
+}
+
+.participants-trigger svg:first-child {
+  color: #4A90E2;
+  flex-shrink: 0;
+}
+
+.participants-text {
+  flex: 1;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.participant-name {
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.others-count {
+  color: #B0B0B0;
+}
+
+.arrow-icon {
+  color: #B0B0B0;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.participants-trigger:hover .arrow-icon {
+  transform: translateX(4px);
+  color: #4A90E2;
+}
+
+/* Participation Requests Section */
+.participation-requests-section {
+  background: rgba(25, 25, 25, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.participation-requests-section .section-title {
+  color: #FFFFFF;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.participation-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.participation-request-card {
+  background: rgba(40, 40, 40, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.participation-request-card:hover {
+  background: rgba(40, 40, 40, 0.7);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.request-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.request-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  flex-shrink: 0;
+}
+
+.request-date {
+  color: #B0B0B0;
+  font-size: 0.875rem;
+}
+
+.request-message {
+  color: #FFFFFF;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.request-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.btn-approve,
+.btn-reject {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.btn-approve {
+  background: transparent;
+  color: #4A90E2;
+  border-color: #4A90E2;
+}
+
+.btn-approve:hover {
+  background: #4A90E2;
+  color: #FFFFFF;
+}
+
+.btn-approve svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-reject {
+  background: transparent;
+  color: #B0B0B0;
+  border-color: #333333;
+}
+
+.btn-reject:hover {
+  background: rgba(255, 59, 48, 0.1);
+  color: #ff3b30;
+  border-color: #ff3b30;
+}
+
+.btn-reject svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* Reduced Motion */
