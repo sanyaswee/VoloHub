@@ -5,8 +5,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.55) 100%);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,13 +26,12 @@
 
 /* Modal Content (Glass Effect) */
 .modal-content {
-  background: rgba(25, 25, 25, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.55) 0%, rgba(30, 30, 30, 0.55) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.5);
   width: 100%;
-  max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
   animation: slideUp 0.3s ease;
@@ -66,8 +65,8 @@
 }
 
 .close-btn {
-  background: transparent;
-  border: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #B0B0B0;
   cursor: pointer;
   padding: 0.5rem;
@@ -79,7 +78,8 @@
 }
 
 .close-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(226, 74, 74, 0.2) 0%, rgba(189, 53, 53, 0.2) 100%);
+  border-color: #E24A4A;
   color: #FFFFFF;
 }
 
@@ -94,9 +94,9 @@
 }
 
 .error-message {
-  background: rgba(226, 74, 74, 0.1);
-  border: 1px solid rgba(226, 74, 74, 0.2);
-  color: #E24A4A;
+  background: linear-gradient(135deg, rgba(226, 74, 74, 0.15) 0%, rgba(189, 53, 53, 0.15) 100%);
+  border: 1px solid rgba(226, 74, 74, 0.3);
+  color: #FCA5A5;
   padding: 0.75rem 1rem;
   border-radius: 6px;
   margin-bottom: 1.5rem;
@@ -120,8 +120,9 @@
 .form-group textarea {
   width: 100%;
   padding: 0.75rem 1rem;
-  background-color: #282828;
-  border: 1px solid #333333;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   color: #FFFFFF;
   font-size: 1rem;
@@ -138,7 +139,8 @@
 .form-group textarea:focus {
   outline: none;
   border-color: #4A90E2;
-  background-color: #2a2a2a;
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.7) 0%, rgba(42, 42, 42, 0.7) 100%);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 .form-group input:disabled,
@@ -163,11 +165,18 @@
 .modal-footer {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 1rem;
   padding-top: 1.5rem;
   margin-top: 0.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
 }
 
 .modal-footer .btn-primary,
@@ -178,18 +187,19 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  border: 1px solid #333333;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-footer .btn-primary {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
-  border-color: #4A90E2;
+  border-color: transparent;
 }
 
 .modal-footer .btn-primary:hover:not(:disabled) {
-  background: #3a7bc8;
-  border-color: #3a7bc8;
+  background: linear-gradient(135deg, #357ABD 0%, #2a6ba8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 .modal-footer .btn-primary:disabled {
@@ -198,15 +208,45 @@
 }
 
 .modal-footer .btn-secondary {
-  background: transparent;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(10px);
   color: #FFFFFF;
 }
 
 .modal-footer .btn-secondary:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .modal-footer .btn-secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Delete Button */
+.btn-delete {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, rgba(226, 74, 74, 0.1) 0%, rgba(189, 53, 53, 0.1) 100%);
+  border: 1px solid rgba(226, 74, 74, 0.3);
+  border-radius: 6px;
+  color: #E24A4A;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(226, 74, 74, 0.2) 0%, rgba(189, 53, 53, 0.2) 100%);
+  border-color: #E24A4A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(226, 74, 74, 0.3);
+}
+
+.btn-delete:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -243,8 +283,21 @@
   }
 
   .modal-footer {
-    flex-direction: column-reverse;
+    flex-direction: column;
     gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .action-buttons {
+    width: 100%;
+    flex-direction: column-reverse;
+    margin-left: 0;
+  }
+
+  .btn-delete {
+    width: 100%;
+    justify-content: center;
+    order: 2;
   }
 
   .modal-footer .btn-primary,

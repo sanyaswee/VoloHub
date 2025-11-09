@@ -1,15 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import './CreateProjectModal.css'
 import apiService from '../../services/api'
+import type { Project } from '../../types'
 
 interface CreateProjectModalProps {
   isOpen: boolean
   onClose: () => void
   onProjectCreated?: () => void
+  editProject?: Project | null
 }
 
-function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProjectModalProps) {
+function CreateProjectModal({ isOpen, onClose, onProjectCreated, editProject }: CreateProjectModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -18,6 +20,26 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProject
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editProject) {
+      setFormData({
+        name: editProject.name,
+        description: editProject.description,
+        city: editProject.city,
+        location: editProject.location
+      })
+    } else {
+      setFormData({
+        name: '',
+        description: '',
+        city: '',
+        location: ''
+      })
+    }
+    setError(null)
+  }, [editProject, isOpen])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -40,7 +62,13 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProject
       setLoading(true)
       setError(null)
       
-      await apiService.createProject(formData)
+      if (editProject) {
+        // Update existing project
+        await apiService.updateProject(editProject.id, formData)
+      } else {
+        // Create new project
+        await apiService.createProject(formData)
+      }
       
       // Reset form
       setFormData({
@@ -56,8 +84,8 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProject
       }
       onClose()
     } catch (err) {
-      setError('Failed to create project. Please try again.')
-      console.error('Error creating project:', err)
+      setError(editProject ? 'Failed to update project. Please try again.' : 'Failed to create project. Please try again.')
+      console.error('Error saving project:', err)
     } finally {
       setLoading(false)
     }
@@ -76,6 +104,36 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProject
     }
   }
 
+  const handleDelete = async () => {
+    if (!editProject) return
+
+    try {
+      setLoading(true)
+      setError(null)
+      
+      await apiService.deleteProject(editProject.id)
+      
+      // Reset form
+      setFormData({
+        name: '',
+        description: '',
+        city: '',
+        location: ''
+      })
+      
+      // Notify parent and close modal
+      if (onProjectCreated) {
+        onProjectCreated()
+      }
+      onClose()
+    } catch (err) {
+      setError('Failed to delete project. Please try again.')
+      console.error('Error deleting project:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       handleClose()
@@ -88,7 +146,7 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProject
     <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content">
         <div className="modal-header">
-          <h2>Create New Project</h2>
+          <h2>{editProject ? 'Edit Project' : 'Create New Project'}</h2>
           <button 
             className="close-btn" 
             onClick={handleClose}
@@ -168,21 +226,39 @@ function CreateProjectModal({ isOpen, onClose, onProjectCreated }: CreateProject
           </div>
 
           <div className="modal-footer">
-            <button 
-              type="button" 
-              className="btn-secondary" 
-              onClick={handleClose}
-              disabled={loading}
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              className="btn-primary" 
-              disabled={loading}
-            >
-              {loading ? 'Creating...' : 'Create Project'}
-            </button>
+            {editProject && (
+              <button 
+                type="button" 
+                className="btn-delete" 
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                {loading ? 'Deleting...' : 'Delete'}
+              </button>
+            )}
+            <div className="action-buttons">
+              <button 
+                type="button" 
+                className="btn-secondary" 
+                onClick={handleClose}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                className="btn-primary" 
+                disabled={loading}
+              >
+                {loading ? (editProject ? 'Updating...' : 'Creating...') : (editProject ? 'Update Project' : 'Create Project')}
+              </button>
+            </div>
           </div>
         </form>
       </div>
