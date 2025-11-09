@@ -142,6 +142,48 @@ class ApiService {
   }
 
   /**
+   * Search projects by query
+   */
+  async searchProjects(query: string): Promise<Project[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/projects/?search=${encodeURIComponent(query)}`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error searching projects:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get projects created by the current user
+   */
+  async getMyProjects(): Promise<Project[]> {
+    try {
+      const response = await fetch(`${this.baseUrl}/projects/?my=true`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching my projects:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Create a new project
    */
   async createProject(payload: CreateProjectPayload): Promise<Project> {

@@ -1,5 +1,8 @@
 import './Header.css'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
+import api from '../../services/api'
+import type { Project } from '../../types'
 
 interface HeaderProps {
   onMenuToggle: () => void
@@ -9,6 +12,11 @@ interface HeaderProps {
 
 function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) {
   const { user, loading, logout } = useAuth()
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<Project[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
 
   const handleLogout = async () => {
     try {
@@ -16,6 +24,49 @@ function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) 
     } catch (error) {
       console.error('Logout failed:', error)
     }
+  }
+
+  // Debounced search effect
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([])
+      setShowDropdown(false)
+      return
+    }
+
+    setIsSearching(true)
+    const timeoutId = setTimeout(async () => {
+      try {
+        const results = await api.searchProjects(searchQuery)
+        setSearchResults(results)
+        setShowDropdown(true)
+      } catch (error) {
+        console.error('Search failed:', error)
+        setSearchResults([])
+      } finally {
+        setIsSearching(false)
+      }
+    }, 300) // 300ms debounce delay
+
+    return () => clearTimeout(timeoutId)
+  }, [searchQuery])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleProjectClick = (projectId: number) => {
+    window.location.href = `/project/${projectId}`
+    setShowDropdown(false)
+    setSearchQuery('')
   }
 
   return (
@@ -34,7 +85,7 @@ function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) 
 
       {/* Content Header - Inside main content */}
       <header className="content-header">
-        <div className="search-container">
+        <div className="search-container" ref={searchContainerRef}>
           <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
             <path d="m21 21-4.35-4.35"></path>
@@ -43,7 +94,56 @@ function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) 
             type="text" 
             className="search-input" 
             placeholder="Search projects, volunteers, or organizations..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => searchQuery && setShowDropdown(true)}
           />
+          {isSearching && (
+            <div className="search-loading">
+              <div className="loading-spinner"></div>
+            </div>
+          )}
+          {showDropdown && (
+            <div className="search-dropdown glass">
+              {searchResults.length > 0 ? (
+                <>
+                  <div className="search-dropdown-header">
+                    {searchResults.length} {searchResults.length === 1 ? 'result' : 'results'} found
+                  </div>
+                  <div className="search-results">
+                    {searchResults.map((project) => (
+                      <button
+                        key={project.id}
+                        className="search-result-item"
+                        onClick={() => handleProjectClick(project.id)}
+                      >
+                        <div className="search-result-content">
+                          <div className="search-result-title">{project.name}</div>
+                          <div className="search-result-meta">
+                            <span>{project.city}</span>
+                            <span>•</span>
+                            <span>{project.votes} votes</span>
+                          </div>
+                        </div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="search-no-results">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                  </svg>
+                  <p>No projects found</p>
+                  <span>Try a different search term</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="header-actions">
           {loading ? (

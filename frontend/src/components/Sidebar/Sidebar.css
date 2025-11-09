@@ -150,3 +150,29 @@
     display: flex;
   }
 }
+
+/* Tablet Styles */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .close-btn {
+    display: flex;
+  }
+}
+
+/* Desktop Styles - Hide close button */
+@media (min-width: 1024px) {
+  .sidebar-header .close-btn {
+    display: none;
+  }
+}

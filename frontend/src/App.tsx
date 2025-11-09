@@ -76,7 +76,16 @@ function App() {
               } 
             />
             <Route path="/discover" element={<Discover />} />
-            <Route path="/my-projects" element={<MyProjects />} />
+            <Route 
+              path="/my-projects" 
+              element={
+                <MyProjects 
+                  key={refreshKey}
+                  onEditProject={handleEditProject}
+                  onLoginRequired={openLoginModal}
+                />
+              } 
+            />
             <Route path="/settings" element={<Settings />} />
             <Route 
               path="/projects/:id" 
