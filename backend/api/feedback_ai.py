@@ -72,3 +72,54 @@ def analyze_project_with_gemini(project_data):
         }
 
     return analysis_result
+
+
+def rank_projects_on_interests(projects, interests):
+    """
+    Ranks a list of projects based on how well they match the user's interests.
+    Uses Gemini to score each project and returns a sorted list.
+    Each returned item is a dict: {"project": <serialized project dict>, "score": <int>}
+    """
+
+    ranked_projects = []
+
+    for project in projects:
+        prompt = f"""
+        You are an expert project recommender.
+        Given the user's interests: {interests}
+        Rate how well this project matches those interests on a scale of 1 to 10.
+        Return only the numeric score.
+
+        Project data:
+        {json.dumps(project, indent=2)}
+        """
+
+        generation_config = genai.types.GenerationConfig(
+            response_mime_type="text/plain",
+            temperature=0.5
+        )
+
+        try:
+            response = model.generate_content(
+                prompt,
+                generation_config=generation_config
+            )
+
+            score_text = response.text.strip()
+            score = int(score_text)
+
+        except ValueError:
+            score = 0  # Default score if parsing fails
+        except Exception as e:
+            print(f"Error calling Gemini API for ranking: {e}")
+            score = 0
+
+        ranked_projects.append((project, score))
+
+    # Sort projects by score in descending order
+    ranked_projects.sort(key=lambda x: x[1], reverse=True)
+
+    # Convert to list of dicts for easier consumption by views/clients
+    ranked_list = [{"project": p, "score": s} for (p, s) in ranked_projects]
+
+    return ranked_list
