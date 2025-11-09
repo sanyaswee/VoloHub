@@ -524,43 +524,54 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
             </div>
           ) : (
             <div className="comments-list">
-              {comments.map((comment) => (
-                <div key={comment.id} className="comment-card">
-                  <div className="comment-header">
-                    <div className="comment-author">
-                      <div className="comment-avatar"></div>
-                      <Username userId={comment.user} />
+              {comments.map((comment) => {
+                const isParticipant = participants.some(p => p.user === comment.user)
+                return (
+                  <div key={comment.id} className={`comment-card ${isParticipant ? 'comment-card-contribution' : ''}`}>
+                    <div className="comment-header">
+                      <div className="comment-author">
+                        <div className="comment-avatar"></div>
+                        <Username userId={comment.user} />
+                        {isParticipant && (
+                          <span className="contribution-badge" title="This user is participating in the project">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Contribution
+                          </span>
+                        )}
+                      </div>
+                      <div className="comment-header-right">
+                        <time className="comment-date">
+                          {new Date(comment.created_at).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </time>
+                        {user && user.id === comment.user && (
+                          <button
+                            className="btn-delete-comment"
+                            onClick={() => handleDeleteComment(comment.id)}
+                            aria-label="Delete comment"
+                            title="Delete comment"
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                              <line x1="10" y1="11" x2="10" y2="17"></line>
+                              <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <div className="comment-header-right">
-                      <time className="comment-date">
-                        {new Date(comment.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </time>
-                      {user && user.id === comment.user && (
-                        <button
-                          className="btn-delete-comment"
-                          onClick={() => handleDeleteComment(comment.id)}
-                          aria-label="Delete comment"
-                          title="Delete comment"
-                        >
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                          </svg>
-                        </button>
-                      )}
-                    </div>
+                    <p className="comment-content">{comment.content}</p>
                   </div>
-                  <p className="comment-content">{comment.content}</p>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
 
