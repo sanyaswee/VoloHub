@@ -11,7 +11,7 @@
   
   color-scheme: dark;
   color: #FFFFFF;
-  background-color: #121212;
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 50%, #1a1a1a 100%);
   
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,7 +24,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #121212;
+  background: linear-gradient(135deg, #0a0a0a 0%, #121212 50%, #1a1a1a 100%);
+  background-attachment: fixed;
   color: #FFFFFF;
 }
 
@@ -44,19 +45,22 @@ h1, h2, h3, h4, h5, h6 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background: linear-gradient(135deg, rgba(25, 25, 25, 0.6) 0%, rgba(30, 30, 30, 0.6) 100%);
+  backdrop-filter: blur(10px);
   color: #FFFFFF;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.25s ease;
 }
 
 button:hover {
-  border-color: #646cff;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.3) 0%, rgba(53, 122, 189, 0.3) 100%);
+  border-color: #4A90E2;
+  transform: translateY(-1px);
 }
 
 button:focus,

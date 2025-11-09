@@ -6,7 +6,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.8) 100%);
+  backdrop-filter: blur(4px);
   z-index: 99;
 }
 
@@ -17,8 +18,9 @@
   top: 0;
   width: 250px;
   height: 100vh;
-  background-color: #191919;
-  border-right: 1px solid #333333;
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.9) 0%, rgba(25, 25, 25, 0.9) 100%);
+  backdrop-filter: blur(12px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
   padding: 2rem 1rem;
   overflow-y: auto;
   z-index: 100;
@@ -43,17 +45,19 @@
 
 .close-btn {
   display: none;
-  background: none;
-  border: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #FFFFFF;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
 .close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(53, 122, 189, 0.2) 100%);
+  border-color: #4A90E2;
 }
 
 .sidebar-nav {
@@ -74,7 +78,7 @@
   transition: all 0.2s;
   font-size: 1rem;
   font-weight: 500;
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   text-align: left;
@@ -82,13 +86,14 @@
 }
 
 .nav-link:hover {
-  background-color: rgba(74, 144, 226, 0.1);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(53, 122, 189, 0.15) 100%);
   color: #FFFFFF;
 }
 
 .nav-link.active {
-  background-color: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
 .nav-icon {
@@ -101,14 +106,15 @@
   gap: 0.75rem;
   padding: 1rem;
   margin-top: 1rem;
-  border-top: 1px solid #333333;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   border-radius: 6px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
 }
 
 .profile-section:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 .profile-avatar {

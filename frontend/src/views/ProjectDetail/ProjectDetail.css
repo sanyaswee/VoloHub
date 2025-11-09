@@ -7,8 +7,9 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: transparent;
-  border: 1px solid #333333;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #FFFFFF;
   padding: 0.5rem 1rem;
   border-radius: 6px;
@@ -20,8 +21,9 @@
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(53, 122, 189, 0.15) 100%);
   border-color: #4A90E2;
+  transform: translateX(-2px);
 }
 
 .back-button svg {
@@ -30,12 +32,12 @@
 
 /* Content Card */
 .project-detail-content {
-  background: rgba(25, 25, 25, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.7) 0%, rgba(30, 30, 30, 0.7) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
 }
 
 /* Header */
@@ -84,8 +86,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: #FFFFFF;
   padding: 0.75rem 1.25rem;
   border-radius: 6px;
@@ -96,14 +99,16 @@
 }
 
 .vote-button:hover:not(:disabled) {
-  background: rgba(74, 144, 226, 0.1);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(53, 122, 189, 0.2) 100%);
   border-color: #4A90E2;
+  transform: translateY(-1px);
 }
 
 .vote-button.voted {
-  background: rgba(74, 144, 226, 0.2);
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.25) 0%, rgba(53, 122, 189, 0.25) 100%);
   border-color: #4A90E2;
   color: #4A90E2;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
 }
 
 .vote-button:disabled {
@@ -139,8 +144,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: transparent;
-  border: 1px solid #4A90E2;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(53, 122, 189, 0.1) 100%);
+  border: 1px solid rgba(74, 144, 226, 0.4);
   border-radius: 6px;
   color: #4A90E2;
   font-size: 0.95rem;
@@ -150,10 +155,11 @@
 }
 
 .btn-ai-feedback:hover {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  border-color: #4A90E2;
   color: #FFFFFF;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 .btn-ai-feedback svg {
@@ -187,8 +193,9 @@
 /* Comments Section */
 .comments-loading,
 .comments-empty {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
@@ -202,16 +209,18 @@
 }
 
 .comment-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.5) 0%, rgba(40, 40, 40, 0.5) 100%);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 1.25rem;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .comment-card:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.6) 0%, rgba(45, 45, 45, 0.6) 100%);
   border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
 }
 
 .comment-header {
@@ -304,7 +313,8 @@
 
 .comment-input {
   width: 100%;
-  background: #282828;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 1rem;
@@ -324,7 +334,8 @@
 .comment-input:focus {
   outline: none;
   border-color: #4A90E2;
-  background: #2a2a2a;
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.7) 0%, rgba(42, 42, 42, 0.7) 100%);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 .comment-input:disabled {
@@ -334,7 +345,7 @@
 
 .btn-submit-comment {
   align-self: flex-end;
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -346,7 +357,9 @@
 }
 
 .btn-submit-comment:hover:not(:disabled) {
-  background: #3a7bc8;
+  background: linear-gradient(135deg, #357ABD 0%, #2a6ba8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 .btn-submit-comment:disabled {
@@ -360,7 +373,8 @@
   align-items: center;
   gap: 1rem;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   text-align: center;
@@ -373,7 +387,7 @@
 }
 
 .btn-login-prompt {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -385,13 +399,16 @@
 }
 
 .btn-login-prompt:hover {
-  background: #3a7bc8;
+  background: linear-gradient(135deg, #357ABD 0%, #2a6ba8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 /* Comments Placeholder - keeping for compatibility */
 .comments-placeholder {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
@@ -416,7 +433,7 @@
 }
 
 .btn-back {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -428,7 +445,9 @@
 }
 
 .btn-back:hover {
-  background: #3a7bc8;
+  background: linear-gradient(135deg, #357ABD 0%, #2a6ba8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 /* Responsive */
@@ -577,8 +596,8 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2rem;
-  background: transparent;
-  border: 1px solid #4A90E2;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(53, 122, 189, 0.1) 100%);
+  border: 1px solid rgba(74, 144, 226, 0.4);
   border-radius: 6px;
   color: #4A90E2;
   font-size: 1rem;
@@ -590,10 +609,11 @@
 }
 
 .btn-apply-participate:hover {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  border-color: #4A90E2;
   color: #FFFFFF;
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(74, 144, 226, 0.3);
+  box-shadow: 0 8px 16px rgba(74, 144, 226, 0.4);
 }
 
 .btn-apply-participate svg {
@@ -606,8 +626,9 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 2rem;
-  background: rgba(40, 40, 40, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   color: #B0B0B0;
   font-size: 1rem;
@@ -627,8 +648,9 @@
   gap: 0.75rem;
   width: 100%;
   padding: 1rem 1.5rem;
-  background: rgba(40, 40, 40, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -637,7 +659,7 @@
 }
 
 .participants-trigger:hover {
-  background: rgba(40, 40, 40, 0.7);
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.7) 0%, rgba(45, 45, 45, 0.7) 100%);
   border-color: rgba(74, 144, 226, 0.3);
   transform: translateX(4px);
 }
@@ -675,9 +697,9 @@
 
 /* Participation Requests Section */
 .participation-requests-section {
-  background: rgba(25, 25, 25, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.7) 0%, rgba(30, 30, 30, 0.7) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -701,16 +723,18 @@
 }
 
 .participation-request-card {
-  background: rgba(40, 40, 40, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 1.5rem;
   transition: all 0.2s ease;
 }
 
 .participation-request-card:hover {
-  background: rgba(40, 40, 40, 0.7);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.7) 0%, rgba(45, 45, 45, 0.7) 100%);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
 }
 
 .request-header {
@@ -767,14 +791,17 @@
 }
 
 .btn-approve {
-  background: transparent;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(53, 122, 189, 0.1) 100%);
   color: #4A90E2;
-  border-color: #4A90E2;
+  border-color: rgba(74, 144, 226, 0.4);
 }
 
 .btn-approve:hover {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  border-color: #4A90E2;
   color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
 .btn-approve svg {
@@ -783,15 +810,17 @@
 }
 
 .btn-reject {
-  background: transparent;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(10px);
   color: #B0B0B0;
-  border-color: #333333;
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .btn-reject:hover {
-  background: rgba(255, 59, 48, 0.1);
+  background: linear-gradient(135deg, rgba(255, 59, 48, 0.15) 0%, rgba(220, 40, 30, 0.15) 100%);
   color: #ff3b30;
-  border-color: #ff3b30;
+  border-color: rgba(255, 59, 48, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-reject svg {
@@ -808,6 +837,6 @@
   
   .project-detail-content {
     backdrop-filter: none;
-    background: rgba(25, 25, 25, 0.95);
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%);
   }
 }

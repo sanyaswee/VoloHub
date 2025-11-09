@@ -24,9 +24,9 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  background: rgba(25, 25, 25, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.7) 0%, rgba(30, 30, 30, 0.7) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   min-height: 400px;
 }

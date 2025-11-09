@@ -5,7 +5,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.8) 100%);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,11 +26,11 @@
 
 /* Login Modal - Glass Effect */
 .login-modal {
-  background: rgba(25, 25, 25, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.85) 0%, rgba(30, 30, 30, 0.85) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.5);
   padding: 2rem;
   width: 100%;
   max-width: 440px;
@@ -53,8 +54,8 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: transparent;
-  border: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #B0B0B0;
   cursor: pointer;
   padding: 0.5rem;
@@ -66,7 +67,8 @@
 }
 
 .modal-close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(226, 74, 74, 0.2) 0%, rgba(189, 53, 53, 0.2) 100%);
+  border-color: #E24A4A;
   color: #FFFFFF;
 }
 
@@ -75,9 +77,10 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.03) 100%);
   padding: 0.25rem;
   border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .auth-tab {
@@ -94,13 +97,14 @@
 }
 
 .auth-tab:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%);
   color: #FFFFFF;
 }
 
 .auth-tab.active {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
 }
 
 /* Modal Title */
@@ -156,8 +160,9 @@
 }
 
 .form-group input {
-  background: #282828;
-  border: 1px solid #333333;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.6) 0%, rgba(40, 40, 40, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
   padding: 0.75rem 1rem;
   color: #FFFFFF;
@@ -168,7 +173,8 @@
 .form-group input:focus {
   outline: none;
   border-color: #4A90E2;
-  background: #2a2a2a;
+  background: linear-gradient(135deg, rgba(35, 35, 35, 0.7) 0%, rgba(42, 42, 42, 0.7) 100%);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 .form-group input:disabled {
@@ -182,7 +188,7 @@
 
 /* Submit Button */
 .btn-submit {
-  background: #4A90E2;
+  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   color: #FFFFFF;
   border: none;
   border-radius: 6px;
@@ -199,9 +205,9 @@
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: #357ABD;
+  background: linear-gradient(135deg, #357ABD 0%, #2a6ba8 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
 }
 
 .btn-submit:disabled {
