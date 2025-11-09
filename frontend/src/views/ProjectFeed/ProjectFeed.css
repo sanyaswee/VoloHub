@@ -1,4 +1,56 @@
 /* Project Feed */
+.project-feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.city-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.city-filter label {
+  color: #B0B0B0;
+  font-weight: 500;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.city-dropdown {
+  padding: 0.5rem 1rem;
+  background: #282828;
+  color: #FFFFFF;
+  border: 1px solid #333333;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  min-width: 150px;
+}
+
+.city-dropdown:hover {
+  background: #2a2a2a;
+  border-color: #4A90E2;
+}
+
+.city-dropdown:focus {
+  outline: none;
+  border-color: #4A90E2;
+  background: #2a2a2a;
+}
+
+.city-dropdown option {
+  background: #282828;
+  color: #FFFFFF;
+  padding: 0.5rem;
+}
+
 .project-feed {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -39,6 +91,20 @@
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+  .city-filter {
+    gap: 0.5rem;
+  }
+
+  .city-filter label {
+    font-size: 0.8125rem;
+  }
+
+  .city-dropdown {
+    min-width: 120px;
+    padding: 0.4rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
   .project-feed {
     grid-template-columns: 1fr;
     gap: 1rem;
