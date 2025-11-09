@@ -5,6 +5,64 @@
   gap: 1.5rem;
 }
 
+/* Feed Header Section */
+.feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.feed-header-content {
+  flex: 1;
+}
+
+.feed-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.feed-subtitle {
+  font-size: 0.95rem;
+  color: #B0B0B0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Discover CTA Button */
+.discover-cta-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: #4A90E2;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+.discover-cta-button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.4);
+}
+
+.discover-cta-button:active {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.35);
+}
+
 .filter-controls {
   display: flex;
   align-items: center;
@@ -104,15 +162,38 @@
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-  .city-filter {
+  .feed-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .feed-title {
+    font-size: 1.25rem;
+  }
+
+  .feed-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .discover-cta-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+  }
+
+  .city-filter,
+  .sort-filter {
     gap: 0.5rem;
   }
 
-  .city-filter label {
+  .city-filter label,
+  .sort-filter label {
     font-size: 0.8125rem;
   }
 
-  .city-dropdown {
+  .city-dropdown,
+  .sort-dropdown {
     min-width: 120px;
     padding: 0.4rem 0.875rem;
     font-size: 0.8125rem;

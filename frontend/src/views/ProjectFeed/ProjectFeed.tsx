@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './ProjectFeed.css'
 import ProjectCard from '../../components/ProjectCard/ProjectCard'
 import apiService from '../../services/api'
@@ -12,6 +13,7 @@ interface ProjectFeedProps {
 type SortOption = 'default' | 'votes' | 'participants'
 
 function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
+  const navigate = useNavigate()
   const [projects, setProjects] = useState<Project[]>([])
   const [allProjects, setAllProjects] = useState<Project[]>([])
   const [availableCities, setAvailableCities] = useState<string[]>([])
@@ -228,6 +230,19 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
 
   return (
     <div className="project-feed-container">
+      <div className="feed-header">
+        <div className="feed-header-content">
+          <h1 className="feed-title">Project Feed</h1>
+          <p className="feed-subtitle">Discover recent community projects and initiatives in your area</p>
+        </div>
+        <button 
+          className="discover-cta-button"
+          onClick={() => navigate('/discover')}
+          aria-label="Discover projects using AI"
+        >
+          Discover Projects Using AI
+        </button>
+      </div>
       <div className="filter-controls">
         {availableCities.length > 0 && (
           <div className="city-filter">
