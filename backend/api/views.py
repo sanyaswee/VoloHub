@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import *
 from .serializers import *
-from .feedback_ai import analyze_project_with_gemini
+from .feedback_ai import analyze_project_with_gemini, rank_projects_on_interests
 
 
 # Create your views here.
@@ -252,7 +252,35 @@ def analyze_project_with_ai(request, project_id):
 
     try:
         analysis_result = analyze_project_with_gemini(serialized_project)
-        return Response(analysis_result)
+        # Return the same shape as /projects endpoints: serialized project + analysis field
+        project_with_analysis = dict(serialized_project)
+        project_with_analysis['analysis'] = analysis_result
+        return Response(project_with_analysis)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def rank_projects_by_interests(request):
+    prompt = request.data.get('prompt', None)
+    if not prompt:
+        return Response({"error": "Prompt is required"}, status=400)
+
+    projects = Project.objects.all()
+    serialized_projects = ProjectSerializer(projects, many=True, context={"request": request}).data
+    try:
+        ranked_projects = rank_projects_on_interests(serialized_projects, prompt)
+        # Convert ranked items into the same shape as /projects: include project data and score
+        formatted = []
+        for item in ranked_projects:
+            proj = item.get('project')
+            score = item.get('score')
+            # Attach score to the project dict
+            proj_with_score = dict(proj)
+            proj_with_score['score'] = score
+            formatted.append(proj_with_score)
+        return Response(formatted)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
 
