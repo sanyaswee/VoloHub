@@ -261,7 +261,7 @@ def analyze_project_with_ai(request, project_id):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def rank_projects_by_interests(request):
     prompt = request.data.get('prompt', None)
     if not prompt:
