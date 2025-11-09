@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import apiService from '../../services/api'
 import type { Project } from '../../types'
 import { ProjectCard, LoginModal } from '../../components'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface RankedProject extends Project {
   score: number
@@ -18,6 +19,7 @@ interface DiscoverState {
 const STORAGE_KEY = 'volohub_discover_state'
 
 function Discover() {
+  const { user } = useAuth()
   const [prompt, setPrompt] = useState('')
   const [rankedProjects, setRankedProjects] = useState<RankedProject[]>([])
   const [aiSummary, setAiSummary] = useState('')
@@ -25,6 +27,7 @@ function Discover() {
   const [error, setError] = useState<string | null>(null)
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
+  const [appliedProjectIds, setAppliedProjectIds] = useState<Set<number>>(new Set())
 
   // Load state from sessionStorage on mount
   useEffect(() => {
@@ -58,6 +61,31 @@ function Discover() {
       }
     }
   }, [prompt, rankedProjects, aiSummary, hasSearched])
+
+  // Fetch user's participation requests to show applied badges
+  useEffect(() => {
+    const fetchAppliedProjects = async () => {
+      if (!user) {
+        setAppliedProjectIds(new Set())
+        return
+      }
+
+      try {
+        const myRequests = await apiService.getMyParticipationRequests()
+        // Get project IDs where user has pending requests
+        const appliedIds = new Set(
+          myRequests
+            .filter(req => req.status === 'pending')
+            .map(req => req.project)
+        )
+        setAppliedProjectIds(appliedIds)
+      } catch (err) {
+        console.error('Error fetching participation requests:', err)
+      }
+    }
+
+    fetchAppliedProjects()
+  }, [user])
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -198,6 +226,7 @@ function Discover() {
                   showScore={true}
                   onLoginRequired={() => setShowLoginModal(true)}
                   onVoteChange={handleVoteChange}
+                  hasApplied={appliedProjectIds.has(project.id)}
                 />
               ))}
             </div>

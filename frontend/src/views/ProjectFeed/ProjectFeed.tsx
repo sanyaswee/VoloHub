@@ -4,6 +4,7 @@ import './ProjectFeed.css'
 import ProjectCard from '../../components/ProjectCard/ProjectCard'
 import apiService from '../../services/api'
 import type { Project } from '../../types'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface ProjectFeedProps {
   onEditProject?: (project: Project) => void
@@ -14,6 +15,7 @@ type SortOption = 'default' | 'votes' | 'participants'
 
 function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [allProjects, setAllProjects] = useState<Project[]>([])
   const [availableCities, setAvailableCities] = useState<string[]>([])
@@ -21,6 +23,7 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
   const [sortBy, setSortBy] = useState<SortOption>('default')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [appliedProjectIds, setAppliedProjectIds] = useState<Set<number>>(new Set())
 
   // Fetch all projects initially to get available cities
   useEffect(() => {
@@ -45,6 +48,31 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
 
     fetchAllProjects()
   }, [])
+
+  // Fetch user's participation requests to show applied badges
+  useEffect(() => {
+    const fetchAppliedProjects = async () => {
+      if (!user) {
+        setAppliedProjectIds(new Set())
+        return
+      }
+
+      try {
+        const myRequests = await apiService.getMyParticipationRequests()
+        // Get project IDs where user has pending requests
+        const appliedIds = new Set(
+          myRequests
+            .filter(req => req.status === 'pending')
+            .map(req => req.project)
+        )
+        setAppliedProjectIds(appliedIds)
+      } catch (err) {
+        console.error('Error fetching participation requests:', err)
+      }
+    }
+
+    fetchAppliedProjects()
+  }, [user])
 
   // Fetch projects when city filter changes
   useEffect(() => {
@@ -282,6 +310,7 @@ function ProjectFeed({ onEditProject, onLoginRequired }: ProjectFeedProps) {
             onEdit={onEditProject}
             onLoginRequired={onLoginRequired}
             onVoteChange={handleVoteChange}
+            hasApplied={appliedProjectIds.has(project.id)}
           />
         ))}
       </div>

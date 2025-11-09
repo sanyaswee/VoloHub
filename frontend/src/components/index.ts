@@ -7,3 +7,5 @@ export { default as LoginModal } from './LoginModal/LoginModal'
 export { default as ParticipantsModal } from './ParticipantsModal/ParticipantsModal'
 export { default as ApplyParticipateModal } from './ApplyParticipateModal/ApplyParticipateModal'
 export { default as AIFeedbackModal } from './AIFeedbackModal/AIFeedbackModal'
+export { default as Avatar } from './Avatar/Avatar'
+
