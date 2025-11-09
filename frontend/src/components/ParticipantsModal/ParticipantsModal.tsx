@@ -2,6 +2,7 @@ import './ParticipantsModal.css'
 import { useEffect, useState } from 'react'
 import type { Participant } from '../../services/api'
 import apiService from '../../services/api'
+import Avatar from '../Avatar/Avatar'
 
 interface ParticipantsModalProps {
   isOpen: boolean
@@ -64,7 +65,7 @@ function ParticipantsModal({ isOpen, onClose, participants }: ParticipantsModalP
           <div className="participants-list">
             {participants.map((participant) => (
               <div key={participant.id} className="participant-item">
-                <div className="participant-avatar"></div>
+                <Avatar userId={participant.user} size={48} />
                 <div className="participant-info">
                   <div className="participant-name">
                     <ParticipantUsername userId={participant.user} />

@@ -1,6 +1,7 @@
 import './Sidebar.css'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import Avatar from '../Avatar/Avatar'
 
 interface SidebarProps {
   isOpen: boolean
@@ -87,10 +88,12 @@ function Sidebar({ isOpen, onClose, currentPath }: SidebarProps) {
             </>
           )}
         </nav>
-        <div className="profile-section">
-          <div className="profile-avatar"></div>
-          <span className="profile-label">Profile</span>
-        </div>
+        {user && (
+          <div className="profile-section">
+            <Avatar userId={user.id} username={user.username} size={36} />
+            <span className="profile-label">{user.username}</span>
+          </div>
+        )}
       </aside>
     </>
   )

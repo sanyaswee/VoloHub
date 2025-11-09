@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import api from '../../services/api'
 import type { Project } from '../../types'
+import Avatar from '../Avatar/Avatar'
 
 interface HeaderProps {
   onMenuToggle: () => void
@@ -97,7 +98,7 @@ function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) 
               </button>
               <div className="user-menu">
                 <button className="user-avatar" aria-label="User menu">
-                  {user.username.charAt(0).toUpperCase()}
+                  <Avatar userId={user.id} username={user.username} size={40} />
                 </button>
                 <div className="user-dropdown glass">
                   <div className="user-info">
@@ -202,7 +203,7 @@ function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) 
               </button>
               <div className="user-menu">
                 <button className="user-avatar" aria-label="User menu">
-                  {user.username.charAt(0).toUpperCase()}
+                  <Avatar userId={user.id} username={user.username} size={40} />
                 </button>
                 <div className="user-dropdown glass">
                   <div className="user-info">
@@ -222,8 +223,8 @@ function Header({ onMenuToggle, onNewProjectClick, onLoginClick }: HeaderProps) 
               </div>
             </>
           ) : (
-            <button className="btn-primary" onClick={onLoginClick}>
-              Login
+            <button className="btn-primary btn-cta" onClick={onLoginClick}>
+              Join Community
             </button>
           )}
         </div>

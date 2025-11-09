@@ -299,6 +299,22 @@
   box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
 }
 
+/* CTA Button - More Prominent */
+.btn-cta {
+  background: #FFFFFF;
+  color: #121212;
+  border: none;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25);
+  font-weight: 700;
+}
+
+.btn-cta:hover {
+  background: #FFFFFF;
+  color: #121212;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.35);
+}
+
 .btn-secondary {
   display: flex;
   align-items: center;
@@ -331,16 +347,16 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  background: transparent;
   color: #FFFFFF;
   border: 2px solid rgba(74, 144, 226, 0.3);
-  font-size: 1rem;
-  font-weight: 700;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  overflow: hidden;
 }
 
 .user-avatar:hover {
@@ -474,6 +490,15 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
+  }
+
+  /* Keep CTA button text visible on mobile */
+  .btn-cta {
+    width: auto;
+    height: auto;
+    padding: 0.625rem 1.25rem;
+    border-radius: 6px;
+    font-size: 0.9375rem;
   }
 
   .notification-btn {

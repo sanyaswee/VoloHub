@@ -8,6 +8,7 @@ import apiService from '../../services/api'
 import ParticipantsModal from '../../components/ParticipantsModal/ParticipantsModal'
 import ApplyParticipateModal from '../../components/ApplyParticipateModal/ApplyParticipateModal'
 import AIFeedbackModal from '../../components/AIFeedbackModal/AIFeedbackModal'
+import Avatar from '../../components/Avatar/Avatar'
 
 interface ProjectDetailProps {
   onLoginRequired?: () => void
@@ -352,7 +353,7 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
               <div key={request.id} className="participation-request-card">
                 <div className="request-header">
                   <div className="request-user">
-                    <div className="request-avatar"></div>
+                    <Avatar userId={request.user} size={36} />
                     <Username userId={request.user} />
                   </div>
                   <time className="request-date">
@@ -530,7 +531,7 @@ function ProjectDetail({ onLoginRequired }: ProjectDetailProps) {
                   <div key={comment.id} className={`comment-card ${isParticipant ? 'comment-card-contribution' : ''}`}>
                     <div className="comment-header">
                       <div className="comment-author">
-                        <div className="comment-avatar"></div>
+                        <Avatar userId={comment.user} size={40} />
                         <Username userId={comment.user} />
                         {isParticipant && (
                           <span className="contribution-badge" title="This user is participating in the project">
